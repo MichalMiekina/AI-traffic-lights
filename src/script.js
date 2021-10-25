@@ -13,16 +13,24 @@ const canvas = document.querySelector('canvas.webgl')
 const scene = new THREE.Scene()
 
 // Objects
+const plane = new THREE.PlaneGeometry(3,3);
+const triangle = new THREE.CircleGeometry(.1,1)
 const geometry = new THREE.TorusGeometry( .7, .2, 16, 100 );
 
 // Materials
 
-const material = new THREE.MeshBasicMaterial()
-material.color = new THREE.Color(0xff0000)
+const redMesh = new THREE.MeshBasicMaterial()
+redMesh.color = new THREE.Color(0xff0000)
 
+const greenMesh = new THREE.MeshBasicMaterial()
+greenMesh.color = new THREE.Color(0x00ff00)
 // Mesh
-const sphere = new THREE.Mesh(geometry,material)
-scene.add(sphere)
+const board = new THREE.Mesh(plane, greenMesh)
+const sphere = new THREE.Mesh(geometry,redMesh)
+const car = new THREE.Mesh(triangle, redMesh)
+scene.add(board)
+scene.add(car)
+car.position.z=1
 
 // Lights
 
@@ -91,6 +99,7 @@ const tick = () =>
 
     // Update objects
     sphere.rotation.y = .5 * elapsedTime
+    car.position.x+=.01
 
     // Update Orbital Controls
     // controls.update()
