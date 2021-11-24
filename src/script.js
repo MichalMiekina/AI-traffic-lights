@@ -152,7 +152,7 @@ function Car() {
     
     car.position.z=1
     car.rotation.x=Math.PI/2
-    car.scale.set(.1,.1,.1)
+    car.scale.set(.05,.05,.05)
 
     return car
 }
@@ -296,7 +296,7 @@ window.addEventListener('resize', () => {
  */
 // Base camera
 const camera = new THREE.PerspectiveCamera(90, sizes.width / sizes.height, .1, 1000)
-camera.position.x = map_columns
+camera.position.x = map_columns/2
 camera.position.y = map_rows/2
 camera.position.z = 10
 camera.rotation.y= Math.PI / 2
@@ -307,7 +307,8 @@ scene.add(camera)
 
 // Controls
 const controls = new OrbitControls(camera, canvas)
-controls.enableDamping = true
+controls.target = new THREE.Vector3(map_columns/2,map_rows/2,0);
+// controls.enableDamping = true
 
 /**
  * Renderer
@@ -366,16 +367,18 @@ const tick = () => {
                 for(let k=0; k<json.steps[frame_index+1].cars.length;k++){
                     if(vehicles_list[i].id==json.steps[frame_index+1].cars[k].id){
                         
-                        // vehicles_list[i].vehicle_object.position.x = (json.steps[frame_index+1].cars[k].x - json.steps[frame_index].cars[j].x) * elapsedTime
-                        // vehicles_list[i].vehicle_object.position.y = (json.steps[frame_index+1].cars[k].y - json.steps[frame_index].cars[j].y) * elapsedTime
-                        // console.log(vehicles_list[i].vehicle_object.position.x)
-                        // console.log(vehicles_list[i].vehicle_object.position.x, vehicles_list[i].vehicle_object.position.y)
-                        vehicles_list[i].vehicle_object.position.x = json.steps[frame_index].cars[j].y + (json.steps[frame_index+1].cars[k].y - json.steps[frame_index].cars[j].y)*(elapsedTime%1)
-                        vehicles_list[i].vehicle_object.position.y = json.steps[frame_index].cars[j].x + (json.steps[frame_index+1].cars[k].x - json.steps[frame_index].cars[j].x)*(elapsedTime%1)
                         
-                        // console.log(json.steps[frame_index].cars[j].x+(json.steps[frame_index+1].cars[k].x - json.steps[frame_index].cars[j].x)*(elapsedTime%1))
-                        // console.log(vehicles_list[i].vehicle_object.position.x)
-                        // console.log(vehicles_list[i].vehicle_object.position.x, vehicles_list[i].vehicle_object.position.y)
+
+                        vehicles_list[i].vehicle_object.position.x = json.steps[frame_index].cars[j].y + (json.steps[frame_index+1].cars[k].y - json.steps[frame_index].cars[j].y)*(elapsedTime%1)
+                        vehicles_list[i].vehicle_object.position.y = (map_rows - json.steps[frame_index].cars[j].x) + ((map_rows - json.steps[frame_index+1].cars[k].x) - (map_rows - json.steps[frame_index].cars[j].x))*(elapsedTime%1)
+                        console.log(vehicles_list[i].id,vehicles_list[i].vehicle_object.position.x, vehicles_list[i].vehicle_object.position.y)
+                        
+
+                        let diff_y = json.steps[frame_index+1].cars[k].y - json.steps[frame_index].cars[j].y
+                        let diff_x = json.steps[frame_index+1].cars[k].x - json.steps[frame_index].cars[j].x
+                        // let vector = diff_x/diff_y 
+                        
+                        // vehicles_list[i].vehicle_object.rotation.y = Math.PI / 2
                     }
                 }
             }
