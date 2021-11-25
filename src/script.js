@@ -71,7 +71,7 @@ function getStreet(){
     context.fillRect(0,0,64,64)
 
     context.fillStyle = '#333'
-    context.fillRect(4,4,56,56)
+    context.fillRect(2,2,60,60)
 
     return new THREE.CanvasTexture(canvas)
 }
@@ -86,12 +86,15 @@ function getGrass(){
     context.fillRect(0,0,64,64)
 
     context.fillStyle = '#0a0'
-    context.fillRect(4,4,56,56)
+    context.fillRect(2,2,60,60)
 
     return new THREE.CanvasTexture(canvas)
 }
 
 function Car() {
+    var colors = [0xff0000, 0x00ff00, 0x0000ff, 0xff00ff, 0xffff00]
+    var color_index = Math.floor(Math.random() * colors.length)
+    var color_test = colors[color_index]
     const car = new THREE.Group()
 
     const carFrontTexture = getCarFrontTexture()
@@ -102,6 +105,7 @@ function Car() {
         new THREE.CylinderBufferGeometry(1, 1, 5, 32),
         new THREE.MeshLambertMaterial({ color: 0x000000 })
     )
+    backWheel.position.z = -2
     backWheel.rotation.x = Math.PI * 2
     backWheel.rotation.z = Math.PI / 2
 
@@ -111,46 +115,46 @@ function Car() {
         new THREE.CylinderBufferGeometry(1, 1, 5, 32),
         new THREE.MeshLambertMaterial({ color: 0x000000 })
     )
-    frontWheel.position.z = -5
+    frontWheel.position.z = 2
     frontWheel.rotation.x = Math.PI * 2
     frontWheel.rotation.z = Math.PI / 2
 
     car.add(frontWheel)
 
     const main = new THREE.Mesh(
-        new THREE.BoxBufferGeometry(4,2,10,4),
+        new THREE.BoxBufferGeometry(4,2,8,4),
         [
-            new THREE.MeshLambertMaterial({ color: 0xdd0000 }),
-            new THREE.MeshLambertMaterial({ color: 0xdd0000 }),
-            new THREE.MeshLambertMaterial({ color: 0xdd0000 }),
-            new THREE.MeshLambertMaterial({ color: 0xdd0000 }),
+            new THREE.MeshLambertMaterial({ color: color_test }),
+            new THREE.MeshLambertMaterial({ color: color_test }),
+            new THREE.MeshLambertMaterial({ color: color_test }),
+            new THREE.MeshLambertMaterial({ color: color_test }),
             new THREE.MeshLambertMaterial({ map: carFrontLampsTexture }),
-            new THREE.MeshLambertMaterial({ color: 0xdd0000 }),
+            new THREE.MeshLambertMaterial({ color: color_test }),
         ]
         
     )
     main.position.y=0.5
-    main.position.z=-2
+    main.position.z=0
     car.add(main)
 
     const cabin = new THREE.Mesh(
-        new THREE.BoxBufferGeometry(4,2,8,4),
+        new THREE.BoxBufferGeometry(4,2,5,4),
         [
             new THREE.MeshLambertMaterial({ map: carSideTexture }),
             new THREE.MeshLambertMaterial({ map: carSideTexture }),
-            new THREE.MeshLambertMaterial({ color: 0xdd0000 }),
-            new THREE.MeshLambertMaterial({ color: 0xdd0000 }),
+            new THREE.MeshLambertMaterial({ color: color_test }),
+            new THREE.MeshLambertMaterial({ color: color_test }),
             new THREE.MeshLambertMaterial({ map: carFrontTexture }),
-            new THREE.MeshLambertMaterial({ color: 0xdd0000 }),
+            new THREE.MeshLambertMaterial({ color: color_test }),
 
         ]
         
     )
     cabin.position.y=2.5
-    cabin.position.z=-3
+    cabin.position.z=0
     car.add(cabin)
     
-    car.position.z=1
+    car.position.z=1.1
     car.rotation.x=Math.PI/2
     car.scale.set(.05,.05,.05)
 
@@ -180,21 +184,12 @@ const grayMesh = new THREE.MeshBasicMaterial()
 grayMesh.color = new THREE.Color(0xA9A3A3)
 
 // Objects
-let carsMeshesList = []
-const tmpGeometry = new THREE.CircleGeometry(.1, 1)
-const nodeGeometry = new THREE.PlaneGeometry(1, 1)
-
-const nodeMesh = new THREE.Mesh(
-    new THREE.BoxBufferGeometry(1,1,1),
-    [
-        new THREE.MeshLambertMaterial({ map: streetTexture }),
-        new THREE.MeshLambertMaterial({ map: streetTexture }),
-        new THREE.MeshLambertMaterial({ map: streetTexture }),
-        new THREE.MeshLambertMaterial({ map: streetTexture }),
-        new THREE.MeshLambertMaterial({ map: streetTexture }),
-        new THREE.MeshLambertMaterial({ map: streetTexture }),
-    ]
-)
+const test_car = Car()
+scene.add(test_car)
+test_car.rotation.x = 0
+// test_car.position.x = 14.4
+// test_car.position.y = 7.5
+console.log(test_car.position.x, test_car.position.y, test_car.position.z)
 
 // Loading map
 console.log(map.nodes.length)
@@ -202,6 +197,8 @@ let map_rows = map.nodes.length;
 let map_columns = map.nodes[0].length;
 let nodesMeshesList = []
 console.log(map.nodes[0][1])
+// #-#-# building world
+
 for (let i = 0; i < map_rows; i++) {
     for (let j = 0; j < map_columns; j++) {
         // nodesMeshesList.push(new THREE.Mesh(nodeGeometry,))
@@ -232,35 +229,11 @@ for (let i = 0; i < map_rows; i++) {
             ))
         }
         scene.add(nodesMeshesList.at(-1))
-        nodesMeshesList.at(-1).position.x = j
-        nodesMeshesList.at(-1).position.y = map_columns - i
+        nodesMeshesList.at(-1).position.x = j +.5
+        nodesMeshesList.at(-1).position.y = map_columns - i -.5
         nodesMeshesList.at(-1).position.z = 1
-
     }
 }
-const roadPlane = new THREE.Mesh(nodeGeometry, grayMesh)
-const grassPlane = new THREE.Mesh(nodeGeometry, greenMesh)
-// scene.add(roadPlane)
-// scene.add(grassPlane)
-roadPlane.position.z = 1
-grassPlane.position.z = 1
-grassPlane.position.x = -5
-
-const plane = new THREE.PlaneGeometry(3, 3);
-const triangle = new THREE.CircleGeometry(.1, 1)
-const geometry = new THREE.TorusGeometry(.7, .2, 16, 100);
-
-
-// Mesh
-const board = new THREE.Mesh(plane, greenMesh)
-const sphere = new THREE.Mesh(geometry, redMesh)
-const car = new THREE.Mesh(triangle, redMesh)
-// scene.add(board)
-// scene.add(car)
-car.position.x = 0.1
-car.position.y = 0.1
-car.position.z = 1
-
 // Lights
 
 const pointLight = new THREE.DirectionalLight(0xffffff, .9)
@@ -295,20 +268,24 @@ window.addEventListener('resize', () => {
  * Camera
  */
 // Base camera
+const size = 10;
+const divisions = 10;
+
+const gridHelper = new THREE.GridHelper( size, divisions );
+scene.add( gridHelper );
 const camera = new THREE.PerspectiveCamera(90, sizes.width / sizes.height, .1, 1000)
 camera.position.x = map_columns/2
 camera.position.y = map_rows/2
 camera.position.z = 10
 camera.rotation.y= Math.PI / 2
-var point = new THREE.Vector3( 15, 15, 0 );
-camera.lookAt(point)
 scene.add(camera)
 
 
 // Controls
 const controls = new OrbitControls(camera, canvas)
 controls.target = new THREE.Vector3(map_columns/2,map_rows/2,0);
-// controls.enableDamping = true
+
+controls.enableDamping = true
 
 /**
  * Renderer
@@ -324,11 +301,6 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
  */
 
 const clock = new THREE.Clock()
-
-for(let i=0;i<carsMeshesList.length;i++){
-    
-    
-}
 
 var vehicles_list = []
 var vehicles_ids_list = []
@@ -356,34 +328,26 @@ const tick = () => {
             vehicles_list.at(-1).vehicle_object.position.y=json.steps[frame_index].cars[i].y
         }
     }
-
-    // console.log(vehicles_ids_list)
-
     for(let i=0;i<vehicles_list.length;i++){
-        
         for(let j =0;j<json.steps[frame_index].cars.length;j++){
             if(vehicles_list[i].id==json.steps[frame_index].cars[j].id){
                 
                 for(let k=0; k<json.steps[frame_index+1].cars.length;k++){
                     if(vehicles_list[i].id==json.steps[frame_index+1].cars[k].id){
-                        
-                        
 
                         vehicles_list[i].vehicle_object.position.x = json.steps[frame_index].cars[j].y + (json.steps[frame_index+1].cars[k].y - json.steps[frame_index].cars[j].y)*(elapsedTime%1)
                         vehicles_list[i].vehicle_object.position.y = (map_rows - json.steps[frame_index].cars[j].x) + ((map_rows - json.steps[frame_index+1].cars[k].x) - (map_rows - json.steps[frame_index].cars[j].x))*(elapsedTime%1)
                         console.log(vehicles_list[i].id,vehicles_list[i].vehicle_object.position.x, vehicles_list[i].vehicle_object.position.y)
-                        
 
                         let diff_y = json.steps[frame_index+1].cars[k].y - json.steps[frame_index].cars[j].y
                         let diff_x = json.steps[frame_index+1].cars[k].x - json.steps[frame_index].cars[j].x
                         // let vector = diff_x/diff_y 
                         
-                        // vehicles_list[i].vehicle_object.rotation.y = Math.PI / 2
+                        vehicles_list[i].vehicle_object.rotation.y = Math.PI / 2
                     }
                 }
             }
         }
-        
     }
 
 
