@@ -11,10 +11,24 @@ body
     font-family: 'Poppins';
 }
 
+body {
+    display: flex;
+    margin: 0;
+}
+
 .webgl
 {
     position: fixed;
     top: 0;
     left: 0;
     outline: none;
+}
+
+#s1 {
+    z-index: 10;
+    margin-left: 2%;
+    margin-top: 100px;
+    color: white;
+    justify-content: space-between;
+    width: 60%;
 }
