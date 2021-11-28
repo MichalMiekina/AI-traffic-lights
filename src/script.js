@@ -15,6 +15,13 @@ class Vehicle{
     }
 }
 
+class TrafficLight{
+    constructor(id, traffic_light_object){
+        this.id = id
+        this.traffic_light_object = traffic_light_object
+    }
+}
+
 function getCarFrontTexture(){
     const  canvas = document.createElement("canvas")
     canvas.width=64
@@ -93,6 +100,22 @@ function getGrass(){
 
     return new THREE.CanvasTexture(canvas)
 }
+
+function Traffic_light(){
+    const traffic_light = new THREE.Group()
+    const light1 = new THREE.Mesh(
+        new THREE.BoxBufferGeometry(.2,.2,.2,4),
+        new THREE.MeshLambertMaterial({ color: 0xff0000 })
+    )
+
+    traffic_light.add(light1)
+
+    traffic_light.position.z=1.5
+
+    return traffic_light
+}
+
+
 
 function Car() {
     var colors = [0xff0000, 0x00ff00, 0x0000ff, 0xff00ff, 0xffff00]
@@ -188,7 +211,7 @@ grayMesh.color = new THREE.Color(0xA9A3A3)
 
 // Objects
 const test_car = Car()
-scene.add(test_car)
+// scene.add(test_car)
 // test_car.rotation.x = 0
 test_car.position.x = 0
 test_car.rotation.y = Math.PI * 1.5
@@ -196,6 +219,10 @@ test_car.rotation.y = Math.PI * 1.5
 console.log(test_car.position.x, test_car.position.y, test_car.position.z)
 scene.remove(test_car)
 
+const test_tl = Traffic_light()
+scene.add(test_tl)
+test_tl.position.x = 0
+test_tl.position.y = 3
 // Loading map
 console.log(map.nodes.length)
 let map_rows = map.nodes.length;
@@ -240,6 +267,39 @@ for (let i = 0; i < map_rows; i++) {
     }
 }
 // Lights
+const traffic_lights = []
+for(let i = 0; i< json.steps[0].lights.length; i++){
+    
+    traffic_lights.push(new TrafficLight(
+        json.steps[0].lights[i].id,
+        new THREE.Mesh(
+            new THREE.SphereBufferGeometry(.16,16,16),
+            new THREE.MeshLambertMaterial({ color: 0xff0000 })
+        )
+        ))
+    
+    scene.add(traffic_lights.at(-1).traffic_light_object)
+    var tl_x = traffic_lights.at(-1).id.split('-')
+    traffic_lights.at(-1).traffic_light_object.position.x = parseFloat(tl_x[1]) +.5
+    traffic_lights.at(-1).traffic_light_object.position.y = map_columns - tl_x[0] -.5
+    traffic_lights.at(-1).traffic_light_object.position.z = 1.5
+
+    console.log(traffic_lights.at(-1).id, traffic_lights.at(-1).traffic_light_object)
+    if(tl_x[2]=='top'){
+        traffic_lights.at(-1).traffic_light_object.position.y += .5
+    }
+    if(tl_x[2]=='bottom'){
+        traffic_lights.at(-1).traffic_light_object.position.y -= .5
+    }
+    if(tl_x[2]=='left'){
+        traffic_lights.at(-1).traffic_light_object.position.x -= .5
+    }
+    if(tl_x[2]=='right'){
+        traffic_lights.at(-1).traffic_light_object.position.x += .5
+    }
+    
+}
+
 
 const pointLight = new THREE.DirectionalLight(0xffffff, .9)
 pointLight.position.x = 2
@@ -332,9 +392,19 @@ const tick = () => {
     for(let i=0; i<vehicles_list.length;i++){
         if(!current_cars.includes(vehicles_list[i].id)){
             scene.remove(vehicles_list[i].vehicle_object)
-            
+
         }
     }
+
+    for(let i =0; i< traffic_lights.length; i++){
+        if(json.steps[frame_index].lights[i].color=="green"){
+            traffic_lights[i].traffic_light_object.material = new THREE.MeshLambertMaterial({ color: 0x00ff00 })
+        }
+        if(json.steps[frame_index].lights[i].color=="red"){
+            traffic_lights[i].traffic_light_object.material = new THREE.MeshLambertMaterial({ color: 0xff0000 })
+        }
+    }
+
 
     for(let i=0;i<vehicles_list.length;i++){
         for(let j =0;j<json.steps[frame_index].cars.length;j++){
