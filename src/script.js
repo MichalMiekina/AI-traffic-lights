@@ -2,7 +2,7 @@ import './style.css'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import * as dat from 'dat.gui'
-import json from '../src/data3.json';
+import json from '../src/data5.json';
 import map from '../src/world2.json';
 
 
@@ -194,6 +194,7 @@ test_car.position.x = 0
 test_car.rotation.y = Math.PI * 1.5
 // test_car.position.y = 7.5
 console.log(test_car.position.x, test_car.position.y, test_car.position.z)
+scene.remove(test_car)
 
 // Loading map
 console.log(map.nodes.length)
@@ -314,6 +315,7 @@ const tick = () => {
     const elapsedTime = clock.getElapsedTime()
     const frame_index = Math.floor(elapsedTime*time_speed)
     
+    let current_cars = []
 
     for(let i=0;i<json.steps[frame_index].cars.length;i++){
         if(!vehicles_ids_list.includes(json.steps[frame_index].cars[i].id)){
@@ -324,7 +326,16 @@ const tick = () => {
             vehicles_list.at(-1).vehicle_object.position.x=json.steps[frame_index].cars[i].x
             vehicles_list.at(-1).vehicle_object.position.y=json.steps[frame_index].cars[i].y
         }
+        current_cars.push(json.steps[frame_index].cars[i].id)
     }
+
+    for(let i=0; i<vehicles_list.length;i++){
+        if(!current_cars.includes(vehicles_list[i].id)){
+            scene.remove(vehicles_list[i].vehicle_object)
+            
+        }
+    }
+
     for(let i=0;i<vehicles_list.length;i++){
         for(let j =0;j<json.steps[frame_index].cars.length;j++){
             if(vehicles_list[i].id==json.steps[frame_index].cars[j].id){
@@ -332,11 +343,11 @@ const tick = () => {
                 for(let k=0; k<json.steps[frame_index+1].cars.length;k++){
                     if(vehicles_list[i].id==json.steps[frame_index+1].cars[k].id){
 
-                        vehicles_list[i].vehicle_object.position.x = json.steps[frame_index].cars[j].y + (json.steps[frame_index+1].cars[k].y - json.steps[frame_index].cars[j].y)*((elapsedTime*time_speed)%1)
-                        vehicles_list[i].vehicle_object.position.y = (map_rows - json.steps[frame_index].cars[j].x) + ((map_rows - json.steps[frame_index+1].cars[k].x) - (map_rows - json.steps[frame_index].cars[j].x))*((elapsedTime*time_speed)%1)
+                        vehicles_list[i].vehicle_object.position.x = json.steps[frame_index].cars[j].x + (json.steps[frame_index+1].cars[k].x - json.steps[frame_index].cars[j].x)*((elapsedTime*time_speed)%1)
+                        vehicles_list[i].vehicle_object.position.y = (map_rows - json.steps[frame_index].cars[j].y) + ((map_rows - json.steps[frame_index+1].cars[k].y) - (map_rows - json.steps[frame_index].cars[j].y))*((elapsedTime*time_speed)%1)
 
-                        let diff_x = json.steps[frame_index+1].cars[k].y - json.steps[frame_index].cars[j].y
-                        let diff_y = json.steps[frame_index+1].cars[k].x - json.steps[frame_index].cars[j].x
+                        let diff_x = json.steps[frame_index+1].cars[k].x - json.steps[frame_index].cars[j].x
+                        let diff_y = json.steps[frame_index+1].cars[k].y - json.steps[frame_index].cars[j].y
                         
                         if(diff_x<0 && diff_y==0){
                             vehicles_list[i].vehicle_object.rotation.y = Math.PI * (3/2)
@@ -345,10 +356,10 @@ const tick = () => {
                             vehicles_list[i].vehicle_object.rotation.y = Math.PI * (1/2)
                         }
                         if(diff_x==0 && diff_y<0){
-                            vehicles_list[i].vehicle_object.rotation.y = Math.PI * (2/2)
+                            vehicles_list[i].vehicle_object.rotation.y = Math.PI * 0
                         }
                         if(diff_x==0 && diff_y>0){
-                            vehicles_list[i].vehicle_object.rotation.y = Math.PI * 0
+                            vehicles_list[i].vehicle_object.rotation.y = Math.PI * 1
                         }
                         
                         
