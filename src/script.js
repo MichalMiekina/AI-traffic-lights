@@ -2,25 +2,25 @@ import './style.css'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import * as dat from 'dat.gui'
-import json from '../src/data5.json';
+import json from '../src/after.json';
 import map from '../src/world2.json';
+import { TrafficLight, Vehicle } from '../src/fun.js'
 
 
 
+// class Vehicle{
+//     constructor(id, vehicle_object){
+//         this.id = id
+//         this.vehicle_object = vehicle_object
+//     }
+// }
 
-class Vehicle{
-    constructor(id, vehicle_object){
-        this.id = id
-        this.vehicle_object = vehicle_object
-    }
-}
-
-class TrafficLight{
-    constructor(id, traffic_light_object){
-        this.id = id
-        this.traffic_light_object = traffic_light_object
-    }
-}
+// class TrafficLight{
+//     constructor(id, traffic_light_object){
+//         this.id = id
+//         this.traffic_light_object = traffic_light_object
+//     }
+// }
 
 function getCarFrontTexture(){
     const  canvas = document.createElement("canvas")
@@ -402,6 +402,9 @@ const tick = () => {
         }
         if(json.steps[frame_index].lights[i].color=="red"){
             traffic_lights[i].traffic_light_object.material = new THREE.MeshLambertMaterial({ color: 0xff0000 })
+        }
+        if(json.steps[frame_index].lights[i].color=="amber"){
+            traffic_lights[i].traffic_light_object.material = new THREE.MeshLambertMaterial({ color: 0xffa500 })
         }
     }
 
