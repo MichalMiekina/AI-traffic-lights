@@ -1,11 +1,76 @@
-import './style.css'
 import * as THREE from 'three'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-import * as dat from 'dat.gui'
 
-let carX = 69;
 
-// export {carX};
+function Car() {
+    var colors = [0xff0000, 0x00ff00, 0x0000ff, 0xff00ff, 0xffff00]
+    var color_index = Math.floor(Math.random() * colors.length)
+    var color_test = colors[color_index]
+    const car = new THREE.Group()
+
+    const carFrontTexture = getCarFrontTexture()
+    const carSideTexture = getCarSideTexture()
+    const carFrontLampsTexture = getCarFrontLamps()
+
+    const backWheel = new THREE.Mesh(
+        new THREE.CylinderBufferGeometry(1, 1, 5, 32),
+        new THREE.MeshLambertMaterial({ color: 0x000000 })
+    )
+    backWheel.position.z = -2
+    backWheel.rotation.x = Math.PI * 2
+    backWheel.rotation.z = Math.PI / 2
+
+    car.add(backWheel)
+
+    const frontWheel = new THREE.Mesh(
+        new THREE.CylinderBufferGeometry(1, 1, 5, 32),
+        new THREE.MeshLambertMaterial({ color: 0x000000 })
+    )
+    frontWheel.position.z = 2
+    frontWheel.rotation.x = Math.PI * 2
+    frontWheel.rotation.z = Math.PI / 2
+
+    car.add(frontWheel)
+
+    const main = new THREE.Mesh(
+        new THREE.BoxBufferGeometry(4,2,8,4),
+        [
+            new THREE.MeshLambertMaterial({ color: color_test }),
+            new THREE.MeshLambertMaterial({ color: color_test }),
+            new THREE.MeshLambertMaterial({ color: color_test }),
+            new THREE.MeshLambertMaterial({ color: color_test }),
+            new THREE.MeshLambertMaterial({ map: carFrontLampsTexture }),
+            new THREE.MeshLambertMaterial({ color: color_test }),
+        ]
+        
+    )
+    main.position.y=0.5
+    main.position.z=0
+    car.add(main)
+
+    const cabin = new THREE.Mesh(
+        new THREE.BoxBufferGeometry(4,2,5,4),
+        [
+            new THREE.MeshLambertMaterial({ map: carSideTexture }),
+            new THREE.MeshLambertMaterial({ map: carSideTexture }),
+            new THREE.MeshLambertMaterial({ color: color_test }),
+            new THREE.MeshLambertMaterial({ color: color_test }),
+            new THREE.MeshLambertMaterial({ map: carFrontTexture }),
+            new THREE.MeshLambertMaterial({ color: color_test }),
+
+        ]
+        
+    )
+    cabin.position.y=2.5
+    cabin.position.z=0
+    car.add(cabin)
+    
+    car.position.z=1.1
+    car.rotation.x=Math.PI/2
+    car.scale.set(.05,.05,.05)
+
+    return car
+}
+
 
 function getCarFrontTexture(){
     const  canvas = document.createElement("canvas")
@@ -56,68 +121,4 @@ function getCarFrontLamps(){
     return new THREE.CanvasTexture(canvas)
 }
 
-function Car() {
-    const car = new THREE.Group()
-
-    const carFrontTexture = getCarFrontTexture()
-    const carSideTexture = getCarSideTexture()
-    const carFrontLampsTexture = getCarFrontLamps()
-
-    const backWheel = new THREE.Mesh(
-        new THREE.CylinderBufferGeometry(1, 1, 5, 32),
-        new THREE.MeshLambertMaterial({ color: 0x000000 })
-    )
-    backWheel.rotation.x = Math.PI * 2
-    backWheel.rotation.z = Math.PI / 2
-
-    car.add(backWheel)
-
-    const frontWheel = new THREE.Mesh(
-        new THREE.CylinderBufferGeometry(1, 1, 5, 32),
-        new THREE.MeshLambertMaterial({ color: 0x000000 })
-    )
-    frontWheel.position.z = -5
-    frontWheel.rotation.x = Math.PI * 2
-    frontWheel.rotation.z = Math.PI / 2
-
-    car.add(frontWheel)
-
-    const main = new THREE.Mesh(
-        new THREE.BoxBufferGeometry(4,2,10,4),
-        [
-            new THREE.MeshLambertMaterial({ color: 0xdd0000 }),
-            new THREE.MeshLambertMaterial({ color: 0xdd0000 }),
-            new THREE.MeshLambertMaterial({ color: 0xdd0000 }),
-            new THREE.MeshLambertMaterial({ color: 0xdd0000 }),
-            new THREE.MeshLambertMaterial({ map: carFrontLampsTexture }),
-            new THREE.MeshLambertMaterial({ color: 0xdd0000 }),
-        ]
-        
-    )
-    main.position.y=0.5
-    main.position.z=-2
-    car.add(main)
-
-    
-
-    const cabin = new THREE.Mesh(
-        new THREE.BoxBufferGeometry(4,2,8,4),
-        [
-            new THREE.MeshLambertMaterial({ map: carSideTexture }),
-            new THREE.MeshLambertMaterial({ map: carSideTexture }),
-            new THREE.MeshLambertMaterial({ color: 0xdd0000 }),
-            new THREE.MeshLambertMaterial({ color: 0xdd0000 }),
-            new THREE.MeshLambertMaterial({ map: carFrontTexture }),
-            new THREE.MeshLambertMaterial({ color: 0xdd0000 }),
-
-        ]
-        
-    )
-    cabin.position.y=2.5
-    cabin.position.z=-3
-    car.add(cabin)
-    
-    
-
-    return car
-}
+export {Car}
