@@ -3,12 +3,28 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import * as dat from 'dat.gui'
 import json from './after.json';
-
 import {map_columns, map_rows} from './constants'
 import {Car} from './Car'
 import {buildLights, buildMap, traffic_lights} from './Terrain'
 
+// window.onload = function(){
+//     document.getElementById("XDB").addEventListener('click'
+// }
 
+document.getElementById("speed_change_slider").addEventListener(
+    'input',
+    function(){
+        document.getElementById("speed_value").textContent = document.getElementById("speed_change_slider").value
+    }
+)
+
+document.getElementById("default_speed_button").addEventListener(
+    'click',
+    function(){
+        document.getElementById("speed_change_slider").value = 1
+        document.getElementById("speed_value").textContent = document.getElementById("speed_change_slider").value
+    }
+)
 
 class TrafficLight{
     constructor(id, traffic_light_object){
@@ -112,6 +128,7 @@ var vehicles_list = []
 var vehicles_ids_list = []
 
 const tick = () => {
+    
     let time_speed = document.getElementById("s1").getElementsByTagName("input")[0].value
     const elapsedTime = clock.getElapsedTime()
     const frame_index = Math.floor(elapsedTime*time_speed)

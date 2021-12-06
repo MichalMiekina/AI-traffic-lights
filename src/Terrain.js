@@ -103,7 +103,7 @@ function buildLights(scene) {
         traffic_lights.at(-1).traffic_light_object.position.y = map_columns - tl_x[0] - .5
         traffic_lights.at(-1).traffic_light_object.position.z = 1.5
 
-        console.log(traffic_lights.at(-1).id, traffic_lights.at(-1).traffic_light_object)
+        // console.log(traffic_lights.at(-1).id, traffic_lights.at(-1).traffic_light_object)
         if (tl_x[2] == 'top') {
             traffic_lights.at(-1).traffic_light_object.position.y += .5
         }

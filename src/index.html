@@ -5,29 +5,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ThreeJS Starter</title>
-    <script src="script.js"></script>
+    <script type="text/javascript" src="./script.js"></script>
 </head>
 
 <body>
     <div id="s1">
-        <p>time speedslider: <a>1</a>x</p>
-        <input type="range" min="0" max="50" value="1" step="0.1" onchange="speedChange()">
+        <p>time speedslider: <a id="speed_value">1</a>x</p>
+        <input type="range" min="0" max="50" value="1" step="0.1" id="speed_change_slider">
         <br>
-        <button onclick="default_speed()">
+        <button id="default_speed_button">
             Set default
         </button>
     </div>
     <canvas class="webgl"></canvas>
-
-    <script>
-        function speedChange() {
-            
-        }
-        
-        function default_speed(){
-            console.log('xd');
-        }
-    </script>
 
 </body>
 
