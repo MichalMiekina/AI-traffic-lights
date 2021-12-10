@@ -1,5 +1,11 @@
 import * as THREE from 'three'
 
+class Vehicle{
+    constructor(id, vehicle_object){
+        this.id = id
+        this.vehicle_object = vehicle_object
+    }
+}
 
 function Car() {
     var colors = [0xff0000, 0x00ff00, 0x0000ff, 0xff00ff, 0xffff00]
@@ -121,4 +127,4 @@ function getCarFrontLamps(){
     return new THREE.CanvasTexture(canvas)
 }
 
-export {Car}
+export {Car, Vehicle}

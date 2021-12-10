@@ -4,12 +4,10 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import * as dat from 'dat.gui'
 import json from './after.json';
 import {map_columns, map_rows} from './constants'
-import {Car} from './Car'
-import {buildLights, buildMap, traffic_lights} from './Terrain'
+import {Car, Vehicle} from './Car'
+import {buildMap} from './Terrain'
+import {buildLights, traffic_lights} from './lights'
 
-// window.onload = function(){
-//     document.getElementById("XDB").addEventListener('click'
-// }
 
 document.getElementById("speed_change_slider").addEventListener(
     'input',
@@ -25,21 +23,45 @@ document.getElementById("default_speed_button").addEventListener(
         document.getElementById("speed_value").textContent = document.getElementById("speed_change_slider").value
     }
 )
+const test_object1 = Car()
+document.getElementById("dev-button").addEventListener(
+    'click',
+    function(){
+        camera.position.x = 2
+        camera.position.y = 2
+        camera.position.z = 2
+        scene.add( new THREE.GridHelper( 10, 10 ) );
 
-class TrafficLight{
-    constructor(id, traffic_light_object){
-        this.id = id
-        this.traffic_light_object = traffic_light_object
+        // Objects
+        
+        scene.add(test_object1)
+        // test_car.rotation.x = 0
+        test_object1.position.x = 0
+        test_object1.rotation.y = Math.PI * 1.5
+        // test_car.position.y = 7.5
+        console.log(test_object1.position.x, test_object1.position.y, test_object1.position.z)
     }
-}
-
-
-class Vehicle{
-    constructor(id, vehicle_object){
-        this.id = id
-        this.vehicle_object = vehicle_object
+)
+document.getElementById("uat-button").addEventListener(
+    'click',
+    function(){
+        controls.target = new THREE.Vector3(map_columns/2,map_rows/2,0);
+        camera.position.x = map_columns/2
+        camera.position.y = map_rows/2
+        camera.rotation.y= Math.PI / 2
+        camera.position.z = 10
+        buildMap(scene)
+        buildLights(scene)  
     }
-}
+)
+document.getElementById("prod-button").addEventListener(
+    'click',
+    function(){
+        console.log('DEV')
+    }
+)
+
+
 
 // Scene
 const scene = new THREE.Scene()
@@ -63,31 +85,10 @@ const gui = new dat.GUI()
 const canvas = document.querySelector('canvas.webgl')
 
 
-
 const camera = new THREE.PerspectiveCamera(90, sizes.width / sizes.height, .1, 1000)
-camera.position.x = map_columns/2
-camera.position.y = map_rows/2
-camera.position.z = 10
-camera.rotation.y= Math.PI / 2
 scene.add(camera)
 
 
-const size = 10;
-const divisions = 10;
-const gridHelper = new THREE.GridHelper( size, divisions );
-scene.add( gridHelper );
-// Objects
-const test_car = Car()
-// scene.add(test_car)
-// test_car.rotation.x = 0
-test_car.position.x = 0
-test_car.rotation.y = Math.PI * 1.5
-// test_car.position.y = 7.5
-console.log(test_car.position.x, test_car.position.y, test_car.position.z)
-
-
-buildMap(scene)
-buildLights(scene)
 
 window.addEventListener('resize', () => {
     // Update sizes
@@ -105,7 +106,7 @@ window.addEventListener('resize', () => {
 
 // Controls
 const controls = new OrbitControls(camera, canvas)
-controls.target = new THREE.Vector3(map_columns/2,map_rows/2,0);
+
 
 controls.enableDamping = true
 
@@ -127,11 +128,20 @@ const clock = new THREE.Clock()
 var vehicles_list = []
 var vehicles_ids_list = []
 
+var simElapsedTime = 0
+var time_speed = document.getElementById("s1").getElementsByTagName("input")[0].value
+var prevElapsedTime = 0
 const tick = () => {
+
     
-    let time_speed = document.getElementById("s1").getElementsByTagName("input")[0].value
+    
     const elapsedTime = clock.getElapsedTime()
-    const frame_index = Math.floor(elapsedTime*time_speed)
+    simElapsedTime += (elapsedTime - prevElapsedTime) * time_speed
+    time_speed = document.getElementById("s1").getElementsByTagName("input")[0].value
+    prevElapsedTime = elapsedTime
+    
+
+    const frame_index = Math.floor(simElapsedTime)
     
     let current_cars = []
 
@@ -174,8 +184,8 @@ const tick = () => {
                 for(let k=0; k<json.steps[frame_index+1].cars.length;k++){
                     if(vehicles_list[i].id==json.steps[frame_index+1].cars[k].id){
 
-                        vehicles_list[i].vehicle_object.position.x = json.steps[frame_index].cars[j].x + (json.steps[frame_index+1].cars[k].x - json.steps[frame_index].cars[j].x)*((elapsedTime*time_speed)%1)
-                        vehicles_list[i].vehicle_object.position.y = (map_rows - json.steps[frame_index].cars[j].y) + ((map_rows - json.steps[frame_index+1].cars[k].y) - (map_rows - json.steps[frame_index].cars[j].y))*((elapsedTime*time_speed)%1)
+                        vehicles_list[i].vehicle_object.position.x = json.steps[frame_index].cars[j].x + (json.steps[frame_index+1].cars[k].x - json.steps[frame_index].cars[j].x)*((simElapsedTime)%1)
+                        vehicles_list[i].vehicle_object.position.y = (map_rows - json.steps[frame_index].cars[j].y) + ((map_rows - json.steps[frame_index+1].cars[k].y) - (map_rows - json.steps[frame_index].cars[j].y))*((simElapsedTime)%1)
 
                         let diff_x = json.steps[frame_index+1].cars[k].x - json.steps[frame_index].cars[j].x
                         let diff_y = json.steps[frame_index+1].cars[k].y - json.steps[frame_index].cars[j].y

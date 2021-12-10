@@ -14,6 +14,7 @@ body
 body {
     display: flex;
     margin: 0;
+    flex-direction: column;
 }
 
 .webgl
@@ -31,4 +32,16 @@ body {
     color: white;
     justify-content: space-between;
     width: 60%;
+}
+
+
+#s2 {
+    z-index: 10;
+    margin-left: 2%;
+    margin-top: 100px;
+    color: white;
+    justify-content: space-between;
+    width: 60%;
+    /* display: flex; */
+    
 }
