@@ -46,9 +46,12 @@ function Car() {
             new THREE.MeshLambertMaterial({ color: color_test }),
             new THREE.MeshLambertMaterial({ map: carFrontLampsTexture }),
             new THREE.MeshLambertMaterial({ color: color_test }),
-        ]
-        
+        ]   
     )
+
+    var lamp1 = new THREE.DirectionalLight(0xffffff, 2, 100)
+    lamp1.target = main
+    main.add(lamp1)
     main.position.y=0.5
     main.position.z=0
     car.add(main)

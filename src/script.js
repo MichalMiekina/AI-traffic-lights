@@ -3,11 +3,25 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import * as dat from 'dat.gui'
 import json from './after.json';
-import {map_columns, map_rows} from './constants'
+import {map_columns, map_rows, frames_amount} from './constants'
 import {Car, Vehicle} from './Car'
 import {buildMap} from './Terrain'
 import {buildLights, traffic_lights} from './lights'
 
+
+document.getElementById("part_change_slider").addEventListener(
+    'input',
+    function(){
+        simElapsedTime = (document.getElementById("part_change_slider").value / 100) * frames_amount        
+    }
+)
+
+document.getElementById("default_part_button").addEventListener(
+    'click',
+    function(){
+        // TODO nice to have
+    }
+)
 
 document.getElementById("speed_change_slider").addEventListener(
     'input',
@@ -37,7 +51,7 @@ document.getElementById("dev-button").addEventListener(
         scene.add(test_object1)
         // test_car.rotation.x = 0
         test_object1.position.x = 0
-        test_object1.rotation.y = Math.PI * 1.5
+        test_object1.rotation.x = Math.PI * 2
         // test_car.position.y = 7.5
         console.log(test_object1.position.x, test_object1.position.y, test_object1.position.z)
     }
@@ -131,6 +145,7 @@ var vehicles_ids_list = []
 var simElapsedTime = 0
 var time_speed = document.getElementById("s1").getElementsByTagName("input")[0].value
 var prevElapsedTime = 0
+var frame_index = 0
 const tick = () => {
 
     
@@ -141,7 +156,9 @@ const tick = () => {
     prevElapsedTime = elapsedTime
     
 
-    const frame_index = Math.floor(simElapsedTime)
+    frame_index = Math.floor(simElapsedTime)
+
+    document.getElementById("part_value").textContent = (frame_index/frames_amount * 100).toFixed(1)
     
     let current_cars = []
 

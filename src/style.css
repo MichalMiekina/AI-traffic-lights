@@ -25,6 +25,15 @@ body {
     outline: none;
 }
 
+#s0 {
+    z-index: 10;
+    margin-left: 2%;
+    margin-top: 100px;
+    color: white;
+    justify-content: space-between;
+    width: 60%;
+}
+
 #s1 {
     z-index: 10;
     margin-left: 2%;
