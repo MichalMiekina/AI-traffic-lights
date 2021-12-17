@@ -10,12 +10,17 @@ class Vehicle{
 function Car() {
     var colors = [0xff0000, 0x00ff00, 0x0000ff, 0xff00ff, 0xffff00]
     var color_index = Math.floor(Math.random() * colors.length)
-    var color_test = colors[color_index]
+    var txtColor = colors[color_index]
+    var txtColor_string = txtColor.toString(16)
+    while(txtColor_string.length!=6){
+        txtColor_string = "00"+txtColor_string
+    }
+    txtColor_string = "#"+txtColor_string
     const car = new THREE.Group()
 
-    const carFrontTexture = getCarFrontTexture()
-    const carSideTexture = getCarSideTexture()
-    const carFrontLampsTexture = getCarFrontLamps()
+    const carFrontTexture = getCarFrontTexture(txtColor_string)
+    const carSideTexture = getCarSideTexture(txtColor_string)
+    const carFrontLampsTexture = getCarFrontLamps(txtColor_string)
 
     const backWheel = new THREE.Mesh(
         new THREE.CylinderBufferGeometry(1, 1, 5, 32),
@@ -40,31 +45,32 @@ function Car() {
     const main = new THREE.Mesh(
         new THREE.BoxBufferGeometry(4,2,8,4),
         [
-            new THREE.MeshLambertMaterial({ color: color_test }),
-            new THREE.MeshLambertMaterial({ color: color_test }),
-            new THREE.MeshLambertMaterial({ color: color_test }),
-            new THREE.MeshLambertMaterial({ color: color_test }),
+            new THREE.MeshLambertMaterial({ color: txtColor }),
+            new THREE.MeshLambertMaterial({ color: txtColor }),
+            new THREE.MeshLambertMaterial({ color: txtColor }),
+            new THREE.MeshLambertMaterial({ color: txtColor }),
             new THREE.MeshLambertMaterial({ map: carFrontLampsTexture }),
-            new THREE.MeshLambertMaterial({ color: color_test }),
+            new THREE.MeshLambertMaterial({ color: txtColor }),
         ]   
     )
 
-    var lamp1 = new THREE.DirectionalLight(0xffffff, 2, 100)
-    lamp1.target = main
-    main.add(lamp1)
     main.position.y=0.5
     main.position.z=0
     car.add(main)
+
+    var lamp = new THREE.RectAreaLight(0xffffff, 1, 1, 1)
+    lamp.position.set(0,0,0)
+    // car.add(lamp)
 
     const cabin = new THREE.Mesh(
         new THREE.BoxBufferGeometry(4,2,5,4),
         [
             new THREE.MeshLambertMaterial({ map: carSideTexture }),
             new THREE.MeshLambertMaterial({ map: carSideTexture }),
-            new THREE.MeshLambertMaterial({ color: color_test }),
-            new THREE.MeshLambertMaterial({ color: color_test }),
+            new THREE.MeshLambertMaterial({ color: txtColor }),
+            new THREE.MeshLambertMaterial({ color: txtColor }),
             new THREE.MeshLambertMaterial({ map: carFrontTexture }),
-            new THREE.MeshLambertMaterial({ color: color_test }),
+            new THREE.MeshLambertMaterial({ color: txtColor }),
 
         ]
         
@@ -81,13 +87,13 @@ function Car() {
 }
 
 
-function getCarFrontTexture(){
+function getCarFrontTexture(txtColor_string){
     const  canvas = document.createElement("canvas")
     canvas.width=64
     canvas.height=64
     const context = canvas.getContext("2d")
 
-    context.fillStyle = "#dd0000"
+    context.fillStyle = txtColor_string
     context.fillRect(0,0,64,64)
 
     context.fillStyle = "#888888"
@@ -96,13 +102,13 @@ function getCarFrontTexture(){
     return new THREE.CanvasTexture(canvas)
 }
 
-function getCarSideTexture(){
+function getCarSideTexture(txtColor_string){
     const  canvas = document.createElement("canvas")
     canvas.width=128
     canvas.height=64
     const context = canvas.getContext("2d")
 
-    context.fillStyle = "#dd0000"
+    context.fillStyle = txtColor_string
     context.fillRect(0,0,128,64)
 
     context.fillStyle = "#888888"
@@ -114,13 +120,13 @@ function getCarSideTexture(){
     return new THREE.CanvasTexture(canvas)
 }
 
-function getCarFrontLamps(){
+function getCarFrontLamps(txtColor_string){
     const canvas = document.createElement("canvas")
     canvas.width=128
     canvas.height=64
     const context = canvas.getContext('2d')
 
-    context.fillStyle = '#d00'
+    context.fillStyle = txtColor_string
     context.fillRect(0,0,128,64)
     
     context.fillStyle = '#FFFF33'

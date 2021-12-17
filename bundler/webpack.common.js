@@ -22,6 +22,13 @@ module.exports = {
             template: path.resolve(__dirname, '../src/index.html'),
             minify: true
         }),
+        new HtmlWebpackPlugin({
+            filename: 'three.html',
+            template: path.resolve(__dirname, '../src/three.html'),
+            // chunks: ['exampleEntry']
+            // template: path.resolve(__dirname, '../src/three.html'),
+            minify: true
+        }),
         new MiniCSSExtractPlugin()
     ],
     module:
