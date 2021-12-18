@@ -5,7 +5,7 @@
 }
 
 a{
-    color: white
+    color: white;
 }
 
 html,
@@ -29,7 +29,7 @@ body {
     outline: none;
 }
 
-#s0 {
+#container {
     z-index: 10;
     margin-left: 2%;
     margin-top: 100px;
@@ -38,9 +38,16 @@ body {
     width: 60%;
 }
 
+#s0 {
+    z-index: 10;
+    margin-top: 100px;
+    color: white;
+    justify-content: space-between;
+    width: 60%;
+}
+
 #s1 {
     z-index: 10;
-    margin-left: 2%;
     margin-top: 100px;
     color: white;
     justify-content: space-between;
@@ -50,7 +57,6 @@ body {
 
 #s2 {
     z-index: 10;
-    margin-left: 2%;
     margin-top: 100px;
     color: white;
     justify-content: space-between;

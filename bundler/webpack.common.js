@@ -20,14 +20,16 @@ module.exports = {
         }),
         new HtmlWebpackPlugin({
             template: path.resolve(__dirname, '../src/index.html'),
-            minify: true
+            minify: true,
+            chunks: ['script.js']
+            
         }),
         new HtmlWebpackPlugin({
             filename: 'three.html',
             template: path.resolve(__dirname, '../src/three.html'),
-            // chunks: ['exampleEntry']
-            // template: path.resolve(__dirname, '../src/three.html'),
-            minify: true
+            minify: true,
+            
+            
         }),
         new MiniCSSExtractPlugin()
     ],

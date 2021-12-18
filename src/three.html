@@ -9,7 +9,31 @@
 
 </head>
 <body>
+    <div id="container">
+        <a href="index.html">HOME</a>
+        
+        <div id="s0">
+            <p>plot percent: <a id="part_value">1</a>%</p>
+            <input type="range" min="0" max="100" value="1" step="0.1" id="part_change_slider">
+            <br>
+            <button id="default_part_button">
+                Set at realtime
+            </button>
+        </div>
+        <div id="s1">
+            <p>time speedslider: <a id="speed_value">1</a>x</p>
+            <input type="range" min="0" max="50" value="1" step="0.1" id="speed_change_slider">
+            <br>
+            <button id="default_speed_button">
+                Set default
+            </button>
+        </div>
+        <div id="s2">
+            <button id="dev-button">DEV</button>
+            <button id="uat-button">UAT</button>
+            <button id="prod-button">PROD</button>
+        </div>
+    </div>
     <canvas class="webgl"></canvas>
-    <p>TEST</p>
 </body>
 </html>
