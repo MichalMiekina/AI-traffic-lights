@@ -12,8 +12,9 @@ class TrafficLight {
 
 
 // Lights
-const traffic_lights = []
+
 function buildLights(scene) {
+    const traffic_lights = []
     for (let i = 0; i < json.steps[0].lights.length; i++) {
 
         traffic_lights.push(new TrafficLight(
@@ -45,6 +46,7 @@ function buildLights(scene) {
         }
 
     }
+    return traffic_lights
 }
 
-export {buildLights, traffic_lights}
+export {buildLights}

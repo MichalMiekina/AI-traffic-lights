@@ -6,7 +6,36 @@ import json from './after.json';
 import { map_columns, map_rows, frames_amount } from './constants'
 import { Car, Vehicle } from './Car'
 import { buildMap } from './Terrain'
-import { buildLights, traffic_lights } from './lights'
+import { buildLights } from './lights'
+
+// import http from http
+
+// const http = require('http')
+const baseUrl = 'http://127.0.0.1:5000/'
+document.getElementById("api").addEventListener(
+    'click',
+    function () {
+        console.log("XD")
+        // http.get(baseUrl + 'list-worlds', res => {
+        //     console.log(res)
+        // }
+        // )
+    }
+)
+
+window.addEventListener('resize', () => {
+    // Update sizes
+    sizes.width = window.innerWidth
+    sizes.height = window.innerHeight
+
+    // Update camera
+    camera.aspect = sizes.width / sizes.height
+    camera.updateProjectionMatrix()
+
+    // Update renderer
+    renderer.setSize(sizes.width, sizes.height)
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+})
 
 document.getElementById("part_change_slider").addEventListener(
     'input',
@@ -65,7 +94,8 @@ document.getElementById("uat-button").addEventListener(
         camera.rotation.y = Math.PI / 2
         camera.position.z = 10
         buildMap(scene)
-        buildLights(scene)
+        tick()
+        // buildLights(scene)
     }
 )
 document.getElementById("prod-button").addEventListener(
@@ -78,7 +108,6 @@ document.getElementById("prod-button").addEventListener(
 
 // Scene
 const scene = new THREE.Scene()
-
 const pointLight = new THREE.DirectionalLight(0xffffff, .9)
 pointLight.position.x = 2
 pointLight.position.y = 3
@@ -101,26 +130,8 @@ const canvas = document.querySelector('canvas.webgl')
 const camera = new THREE.PerspectiveCamera(90, sizes.width / sizes.height, .1, 1000)
 scene.add(camera)
 
-
-
-window.addEventListener('resize', () => {
-    // Update sizes
-    sizes.width = window.innerWidth
-    sizes.height = window.innerHeight
-
-    // Update camera
-    camera.aspect = sizes.width / sizes.height
-    camera.updateProjectionMatrix()
-
-    // Update renderer
-    renderer.setSize(sizes.width, sizes.height)
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
-})
-
 // Controls
 const controls = new OrbitControls(camera, canvas)
-
-
 controls.enableDamping = true
 
 /**
@@ -141,14 +152,13 @@ var simElapsedTime = 0
 var time_speed = document.getElementById("s1").getElementsByTagName("input")[0].value
 var prevElapsedTime = 0
 var frame_index = 0
-
+var traffic_lights = buildLights(scene)
 const tick = () => {
 
     const elapsedTime = clock.getElapsedTime()
     simElapsedTime += (elapsedTime - prevElapsedTime) * time_speed
     time_speed = document.getElementById("s1").getElementsByTagName("input")[0].value
     prevElapsedTime = elapsedTime
-
 
     frame_index = Math.floor(simElapsedTime)
 
@@ -227,4 +237,4 @@ const tick = () => {
     // Call tick again on the next frame
     window.requestAnimationFrame(tick)
 }
-tick()
+

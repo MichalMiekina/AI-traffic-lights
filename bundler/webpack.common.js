@@ -21,7 +21,7 @@ module.exports = {
         new HtmlWebpackPlugin({
             template: path.resolve(__dirname, '../src/index.html'),
             minify: true,
-            chunks: ['script.js']
+            // chunks: ['script.js']
             
         }),
         new HtmlWebpackPlugin({
@@ -72,7 +72,9 @@ module.exports = {
                         loader: 'file-loader',
                         options:
                         {
-                            outputPath: 'assets/images/'
+                            name: '[name].[ext]',
+                            outputPath: 'img/',
+                            publicPath: 'img/'
                         }
                     }
                 ]
@@ -87,6 +89,7 @@ module.exports = {
                         loader: 'file-loader',
                         options:
                         {
+                            
                             outputPath: 'assets/fonts/'
                         }
                     }
