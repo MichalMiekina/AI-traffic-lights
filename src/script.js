@@ -16,10 +16,9 @@ document.getElementById("api").addEventListener(
     'click',
     function () {
         console.log("XD")
-        // http.get(baseUrl + 'list-worlds', res => {
-        //     console.log(res)
-        // }
-        // )
+        fetch(baseUrl+"list-worlds")
+        .then(response => response)
+        .then(data => console.log(data))
     }
 )
 

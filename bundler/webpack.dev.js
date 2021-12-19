@@ -24,6 +24,11 @@ module.exports = merge(
             disableHostCheck: true,
             overlay: true,
             noInfo: true,
+            headers: {
+                "Access-Control-Allow-Origin": "http://localhost:5000",
+                "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
+                "Access-Control-Allow-Headers": "X-Requested-With, content-type, Authorization"
+            },
             after: function(app, server, compiler)
             {
                 const port = server.options.port
@@ -31,7 +36,6 @@ module.exports = merge(
                 const localIp = ip.v4.sync()
                 const domain1 = `http${https}://${localIp}:${port}`
                 const domain2 = `http${https}://localhost:${port}`
-                
                 console.log(`Project running at:\n  - ${infoColor(domain1)}\n  - ${infoColor(domain2)}`)
             }
         }
