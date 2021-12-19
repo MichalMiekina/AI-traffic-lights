@@ -11,13 +11,13 @@ import { buildLights } from './lights'
 // import http from http
 
 // const http = require('http')
-const baseUrl = 'http://127.0.0.1:5000/'
+const baseUrl = 'http://127.0.0.1:8080/api/'
 document.getElementById("api").addEventListener(
     'click',
     function () {
         console.log("XD")
         fetch(baseUrl+"list-worlds")
-        .then(response => response)
+        .then(response => response.json())
         .then(data => console.log(data))
     }
 )
