@@ -2,36 +2,48 @@ import map from './world2.json';
 import * as THREE from 'three';
 import { map_columns, map_rows } from './constants'
 
-// wyciągnąć do maina
-const streetTexture = getStreet()
-const grassTexture = getGrass()
+const RECT_SIZE = 64
+const RECT_START = 0
+const INNER_RECT_START = 1
 
-function getStreet() {
+const INNER_RECT_SIZE = 62
+
+const STREET_COLOR = '#333'
+const FRAME_COLOR = '#FFF'
+
+const GRASS_COLOR = '#0a0'
+
+
+const streetTexture = createStreet()
+const grassTexture = createGrass()
+
+function createContext() {
     const canvas = document.createElement("canvas")
-    canvas.width = 64
-    canvas.height = 64
-    const context = canvas.getContext('2d')
+    canvas.width = RECT_SIZE
+    canvas.height = RECT_SIZE
+    return {canvas: canvas, context: canvas.getContext('2d')}
+}
 
-    context.fillStyle = '#FFF'
-    context.fillRect(0, 0, 64, 64)
+function createStreet() {
+    const {canvas, context} = createContext()
 
-    context.fillStyle = '#333'
-    context.fillRect(1, 1, 62, 62)
+    context.fillStyle = FRAME_COLOR
+    context.fillRect(RECT_START, RECT_START, RECT_SIZE, RECT_SIZE)
+
+    context.fillStyle = STREET_COLOR
+    context.fillRect(INNER_RECT_START, INNER_RECT_START, INNER_RECT_SIZE, INNER_RECT_SIZE)
 
     return new THREE.CanvasTexture(canvas)
 }
 
-function getGrass() {
-    const canvas = document.createElement("canvas")
-    canvas.width = 64
-    canvas.height = 64
-    const context = canvas.getContext('2d')
+function createGrass() {
+    const {canvas, context} = createContext()
 
-    context.fillStyle = '#FFF'
-    context.fillRect(0, 0, 64, 64)
+    context.fillStyle = FRAME_COLOR
+    context.fillRect(RECT_START, RECT_START, RECT_SIZE, RECT_SIZE)
 
-    context.fillStyle = '#0a0'
-    context.fillRect(1, 1, 62, 62)
+    context.fillStyle = GRASS_COLOR
+    context.fillRect(INNER_RECT_START, INNER_RECT_START, INNER_RECT_SIZE, INNER_RECT_SIZE)
 
     return new THREE.CanvasTexture(canvas)
 }
@@ -61,4 +73,4 @@ function buildMap(scene) {
     }
 }
 
-export { streetTexture, grassTexture,buildMap }
+export { buildMap }
