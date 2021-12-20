@@ -4,7 +4,10 @@ const MiniCSSExtractPlugin = require('mini-css-extract-plugin')
 const path = require('path')
 
 module.exports = {
-    entry: path.resolve(__dirname, '../src/script.js'),
+    entry:{
+        main: path.resolve(__dirname, '../src/script.js'),
+        three: path.resolve(__dirname, '../src/home.js'),
+    },
     output:
     {
         filename: 'bundle.[contenthash].js',
@@ -12,89 +15,89 @@ module.exports = {
     },
     devtool: 'source-map',
     plugins:
-    [
-        new CopyWebpackPlugin({
-            patterns: [
-                { from: path.resolve(__dirname, '../static') }
-            ]
-        }),
-        new HtmlWebpackPlugin({
-            template: path.resolve(__dirname, '../src/index.html'),
-            minify: true,
-            // chunks: ['script.js']
-            
-        }),
-        new HtmlWebpackPlugin({
-            filename: 'three.html',
-            template: path.resolve(__dirname, '../src/three.html'),
-            minify: true,
-            
-            
-        }),
-        new MiniCSSExtractPlugin()
-    ],
+        [
+            new CopyWebpackPlugin({
+                patterns: [
+                    { from: path.resolve(__dirname, '../static') }
+                ]
+            }),
+            new HtmlWebpackPlugin({
+                template: path.resolve(__dirname, '../src/index.html'),
+                minify: true,
+                chunks: ['three']
+
+            }),
+            new HtmlWebpackPlugin({
+                filename: 'three.html',
+                template: path.resolve(__dirname, '../src/three.html'),
+                minify: true,
+                chunks: ['main']
+
+            }),
+            new MiniCSSExtractPlugin()
+        ],
     module:
     {
         rules:
-        [
-            // HTML
-            {
-                test: /\.(html)$/,
-                use: ['html-loader']
-            },
+            [
+                // HTML
+                {
+                    test: /\.(html)$/,
+                    use: ['html-loader']
+                },
 
-            // JS
-            {
-                test: /\.js$/,
-                exclude: /node_modules/,
-                use:
-                [
-                    'babel-loader'
-                ]
-            },
+                // JS
+                {
+                    test: /\.js$/,
+                    exclude: /node_modules/,
+                    use:
+                        [
+                            'babel-loader'
+                        ]
+                },
 
-            // CSS
-            {
-                test: /\.css$/,
-                use:
-                [
-                    MiniCSSExtractPlugin.loader,
-                    'css-loader'
-                ]
-            },
+                // CSS
+                {
+                    test: /\.css$/,
+                    use:
+                        [
+                            MiniCSSExtractPlugin.loader,
+                            'css-loader'
+                        ]
+                },
 
-            // Images
-            {
-                test: /\.(jpg|png|gif|svg)$/,
-                use:
-                [
-                    {
-                        loader: 'file-loader',
-                        options:
-                        {
-                            name: '[name].[ext]',
-                            outputPath: 'img/',
-                            publicPath: 'img/'
-                        }
-                    }
-                ]
-            },
+                // Images
+                {
+                    test: /\.(jpg|png|gif|svg)$/,
+                    use:
+                        [
+                            {
+                                loader: 'file-loader',
+                                options:
+                                {
+                                    name: '[name].[ext]',
+                                    outputPath: 'img/',
+                                    publicPath: 'img/'
+                                }
+                            }
+                        ]
+                },
 
-            // Fonts
-            {
-                test: /\.(ttf|eot|woff|woff2)$/,
-                use:
-                [
-                    {
-                        loader: 'file-loader',
-                        options:
-                        {
-                            
-                            outputPath: 'assets/fonts/'
-                        }
-                    }
-                ]
-            }
-        ]
+                // Fonts
+                {
+                    test: /\.(ttf|eot|woff|woff2)$/,
+                    use:
+                        [
+                            {
+                                loader: 'file-loader',
+                                options:
+                                {
+
+                                    outputPath: 'assets/fonts/'
+                                }
+                            }
+                        ]
+                }
+            ]
     }
 }

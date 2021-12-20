@@ -1,4 +1,4 @@
-import './style.css'
+import './css/style.css'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import * as dat from 'dat.gui'
@@ -8,19 +8,6 @@ import { Car, Vehicle } from './Car'
 import { buildMap } from './Terrain'
 import { buildLights } from './lights'
 
-// import http from http
-
-// const http = require('http')
-const baseUrl = 'http://127.0.0.1:8080/api/'
-document.getElementById("api").addEventListener(
-    'click',
-    function () {
-        console.log("XD")
-        fetch(baseUrl+"list-worlds")
-        .then(response => response.json())
-        .then(data => console.log(data))
-    }
-)
 
 window.addEventListener('resize', () => {
     // Update sizes
