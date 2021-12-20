@@ -13,19 +13,19 @@ const HALF = .5
 
 const BULB_HEIGHT = 1.5
 
-//usunięta klasa, bo nie ma żadnych metod, w takiej sytuacji wystarczy zwykły słownik
-
 
 function buildLights(scene) {
     let traffic_lights = []
 
     json.steps[0].lights.forEach(light => {
-    
-        let semafor = {id: light.id,
+
+        let semafor = {
+            id: light.id,
             traffic_light_object: new THREE.Mesh(
                 new THREE.SphereBufferGeometry(BULB_SIZE, BULB_SEGMENTS, BULB_SEGMENTS),
                 new THREE.MeshNormalMaterial({ color: BULB_INITIAL_COLOR })
-            )}
+            )
+        }
 
         let [y, x, side] = semafor.id.split('-')
 
@@ -48,9 +48,9 @@ function buildLights(scene) {
 
         scene.add(semafor.traffic_light_object)
         traffic_lights.push(semafor)
-        
+
     });
     return traffic_lights
 }
 
-export {buildLights}
+export { buildLights }
