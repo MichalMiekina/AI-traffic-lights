@@ -2,77 +2,75 @@ import map from './world2.json';
 import * as THREE from 'three';
 import { map_columns, map_rows } from './constants'
 
-const streetTexture = getStreet()
-const grassTexture = getGrass()
+const RECT_SIZE = 64
+const RECT_START = 0
+const INNER_RECT_START = 1
 
-function getStreet() {
+const INNER_RECT_SIZE = 62
+
+const STREET_COLOR = '#333'
+const FRAME_COLOR = '#FFF'
+
+const GRASS_COLOR = '#0a0'
+
+
+const streetTexture = createStreet()
+const grassTexture = createGrass()
+
+function createContext() {
     const canvas = document.createElement("canvas")
-    canvas.width = 64
-    canvas.height = 64
-    const context = canvas.getContext('2d')
+    canvas.width = RECT_SIZE
+    canvas.height = RECT_SIZE
+    return {canvas: canvas, context: canvas.getContext('2d')}
+}
 
-    context.fillStyle = '#FFF'
-    context.fillRect(0, 0, 64, 64)
+function createStreet() {
+    const {canvas, context} = createContext()
 
-    context.fillStyle = '#333'
-    context.fillRect(1, 1, 62, 62)
+    context.fillStyle = FRAME_COLOR
+    context.fillRect(RECT_START, RECT_START, RECT_SIZE, RECT_SIZE)
+
+    context.fillStyle = STREET_COLOR
+    context.fillRect(INNER_RECT_START, INNER_RECT_START, INNER_RECT_SIZE, INNER_RECT_SIZE)
 
     return new THREE.CanvasTexture(canvas)
 }
 
-function getGrass() {
-    const canvas = document.createElement("canvas")
-    canvas.width = 64
-    canvas.height = 64
-    const context = canvas.getContext('2d')
+function createGrass() {
+    const {canvas, context} = createContext()
 
-    context.fillStyle = '#FFF'
-    context.fillRect(0, 0, 64, 64)
+    context.fillStyle = FRAME_COLOR
+    context.fillRect(RECT_START, RECT_START, RECT_SIZE, RECT_SIZE)
 
-    context.fillStyle = '#0a0'
-    context.fillRect(1, 1, 62, 62)
+    context.fillStyle = GRASS_COLOR
+    context.fillRect(INNER_RECT_START, INNER_RECT_START, INNER_RECT_SIZE, INNER_RECT_SIZE)
 
     return new THREE.CanvasTexture(canvas)
 }
 
 
 function buildMap(scene) {
-
     const nodesMeshesList = []
     for (let i = 0; i < map_rows; i++) {
         for (let j = 0; j < map_columns; j++) {
-            if (map.nodes[i][j].type == 'grass') {
-                nodesMeshesList.push(new THREE.Mesh(
-                    new THREE.BoxBufferGeometry(1, 1, .1),
-                    [
-                        new THREE.MeshLambertMaterial({ map: grassTexture }),
-                        new THREE.MeshLambertMaterial({ map: grassTexture }),
-                        new THREE.MeshLambertMaterial({ map: grassTexture }),
-                        new THREE.MeshLambertMaterial({ map: grassTexture }),
-                        new THREE.MeshLambertMaterial({ map: grassTexture }),
-                        new THREE.MeshLambertMaterial({ map: grassTexture }),
-                    ]
-                ))
-            }
-            else {
-                nodesMeshesList.push(new THREE.Mesh(
-                    new THREE.BoxBufferGeometry(1, 1, .1),
-                    [
-                        new THREE.MeshLambertMaterial({ map: streetTexture }),
-                        new THREE.MeshLambertMaterial({ map: streetTexture }),
-                        new THREE.MeshLambertMaterial({ map: streetTexture }),
-                        new THREE.MeshLambertMaterial({ map: streetTexture }),
-                        new THREE.MeshLambertMaterial({ map: streetTexture }),
-                        new THREE.MeshLambertMaterial({ map: streetTexture }),
-                    ]
-                ))
-            }
-            scene.add(nodesMeshesList.at(-1))
-            nodesMeshesList.at(-1).position.x = j + .5
-            nodesMeshesList.at(-1).position.y = map_columns - i - .5
-            nodesMeshesList.at(-1).position.z = 1
+
+            let texture = map.nodes[i][j].type == 'grass' ? grassTexture : streetTexture 
+
+            let material = new THREE.MeshLambertMaterial({ map: texture })
+
+            let mesh = new THREE.Mesh(
+                new THREE.BoxBufferGeometry(1, 1, .1),
+                Array(6).fill(material)
+            )
+
+            mesh.position.x = j + .5
+            mesh.position.y = map_columns - i - .5
+            mesh.position.z = 1
+
+            scene.add(mesh)
+            nodesMeshesList.push(mesh)
         }
     }
 }
 
-export { streetTexture, grassTexture,buildMap }
+export { buildMap }
