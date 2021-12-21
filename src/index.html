@@ -14,15 +14,31 @@
         <h1>INPUT VARIABLES</h1>
         <div id="world">
             <label for="world">World number:</label>
-            <input type="number" name="world" id="world" min="1" max="3" value="1">
+            <select name="world" id="world">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+            </select>
         </div>
 
 
         <div id="weights">
-            <label for="weights">Weights level:</label>
-            <input type="number" name="weights" id="weights" min="1" max="3" value="1">
+            <label for="weights">Arrange intensity:</label>
+            <select name="weights" id="weights">
+                <option value="1">balanced</option>
+                <option value="2">road with right of way</option>
+                <option value="3">road without right of way</option>
+            </select>
         </div>
 
+        <div id="lights">
+            <label for="green-lights">Init green light lenght:</label>
+            min:
+            <input type="number" name="" id="" min="0" max="1000">
+            max:
+            <input type="number" name="" id="" min="0" max="1000">
+        </div>
         div#
 
         <button id="api-get">GET</button>
@@ -32,12 +48,8 @@
         <a href="three.html">THREE</a>
     </div>
 
-    <script>
+    <canvas class="gallery"></canvas>
 
-
-
-        
-    </script>
 </body>
 
 </html>
