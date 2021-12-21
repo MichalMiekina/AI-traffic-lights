@@ -1,4 +1,5 @@
-import map from './world2.json';
+// import map from './world2.json';
+// import {map} from './home'
 import * as THREE from 'three';
 import { map_columns, map_rows } from './constants'
 
@@ -49,7 +50,8 @@ function createGrass() {
 }
 
 
-function buildMap(scene) {
+function buildMap(scene, map) {
+    console.log('XD: '+map)
     const nodesMeshesList = []
     for (let i = 0; i < map_rows; i++) {
         for (let j = 0; j < map_columns; j++) {

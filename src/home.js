@@ -36,20 +36,19 @@ const data = {
     "worldName": "miejskie, duze skrzyzowanie"
 }
 var token = ''
-var map
 document.getElementById("api-get").addEventListener(
     'click',
     function () {
-        console.log("GET")
-        fetch(apiUrl + "list-worlds")
+        let maps = [];
+        console.log("GET");
+        
+        (async () =>await fetch(apiUrl + "list-worlds")
             .then(response => response.json())
-            // .then(data => console.log(data))
-            // .then(data => map)
-            .then(data =>map = data[0])
-            .then(data => buildMap(scene))
-
-
-        console.log(map)
+            .then(data => maps = data)
+        )()
+        console.log(maps)
+        buildMap(scene, maps[0])
+        
     }
 )
 
