@@ -5,7 +5,6 @@ import { buildMap } from './Terrain'
 import * as dat from 'dat.gui'
 
 
-
 function drawSingleMap(map, mapNumber) {
     const pointLight = new THREE.DirectionalLight(0xffffff, .9)
     pointLight.position.x = 2
@@ -106,6 +105,7 @@ document.getElementById("api-post").addEventListener(
         })
             .then(response => response.json())
             .then(data => token = data.token)
-            .then(_ => console.log(token))
+            // .then(_ => console.log(token))
+            .then(token => window.location.replace('http://localhost:8080/plots?token='+token))
     }
 )

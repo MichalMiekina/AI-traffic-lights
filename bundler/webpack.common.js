@@ -7,6 +7,7 @@ module.exports = {
     entry:{
         script: path.resolve(__dirname, '../src/script.js'),
         home: path.resolve(__dirname, '../src/home.js'),
+        plots: path.resolve(__dirname, '../src/plots.js'),
     },
     output:
     {
@@ -28,11 +29,17 @@ module.exports = {
 
             }),
             new HtmlWebpackPlugin({
-                filename: 'three.html',
+                filename: 'three',
                 template: path.resolve(__dirname, '../src/three.html'),
                 minify: true,
                 chunks: ['script']
 
+            }),
+            new HtmlWebpackPlugin({
+                filename: 'plots',
+                template: path.resolve(__dirname, '../src/plots.html'),
+                minify: true,
+                chunks: ['plots']
             }),
             new MiniCSSExtractPlugin()
         ],
