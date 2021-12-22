@@ -1,7 +1,7 @@
 // import map from './world2.json';
 // import {map} from './home'
 import * as THREE from 'three';
-import { map_columns, map_rows } from './constants'
+
 
 const RECT_SIZE = 64
 const RECT_START = 0
@@ -51,11 +51,9 @@ function createGrass() {
 
 
 function buildMap(scene, map) {
-    console.log('XD: '+map)
     const nodesMeshesList = []
-    for (let i = 0; i < map_rows; i++) {
-        for (let j = 0; j < map_columns; j++) {
-
+    for (let i = 0; i < map.nodes.length; i++) {
+        for (let j = 0; j < map.nodes[i].length; j++) {
             let texture = map.nodes[i][j].type == 'grass' ? grassTexture : streetTexture 
 
             let material = new THREE.MeshLambertMaterial({ map: texture })
@@ -66,7 +64,7 @@ function buildMap(scene, map) {
             )
 
             mesh.position.x = j + .5
-            mesh.position.y = map_columns - i - .5
+            mesh.position.y = map.nodes[i].length - i - .5
             mesh.position.z = 1
 
             scene.add(mesh)

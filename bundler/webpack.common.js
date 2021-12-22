@@ -5,8 +5,8 @@ const path = require('path')
 
 module.exports = {
     entry:{
-        main: path.resolve(__dirname, '../src/script.js'),
-        three: path.resolve(__dirname, '../src/home.js'),
+        script: path.resolve(__dirname, '../src/script.js'),
+        home: path.resolve(__dirname, '../src/home.js'),
     },
     output:
     {
@@ -24,14 +24,14 @@ module.exports = {
             new HtmlWebpackPlugin({
                 template: path.resolve(__dirname, '../src/index.html'),
                 minify: true,
-                chunks: ['three']
+                chunks: ['home']
 
             }),
             new HtmlWebpackPlugin({
                 filename: 'three.html',
                 template: path.resolve(__dirname, '../src/three.html'),
                 minify: true,
-                chunks: ['main']
+                chunks: ['script']
 
             }),
             new MiniCSSExtractPlugin()
