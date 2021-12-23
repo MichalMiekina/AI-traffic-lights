@@ -3,7 +3,8 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { buildMap } from './Terrain'
 import * as dat from 'dat.gui'
-
+// hide canvas generating gallery images
+document.getElementById('c').style.display = 'none'
 
 function drawSingleMap(map, mapNumber) {
     const pointLight = new THREE.DirectionalLight(0xffffff, .9)
@@ -32,10 +33,10 @@ function drawMaps(data) {
 
         var img = document.createElement('img')
         img.src = renderer.domElement.toDataURL("image/jpeg");
-        document.body.appendChild(img)
+        // document.body.appendChild(img)
+        document.getElementById('gallery-container').appendChild(img)
     }
-    // hide canvas generating gallery images
-    document.getElementById('c').style.display = 'none'
+    
 }
 const gui = new dat.GUI()
 const scene = new THREE.Scene()
