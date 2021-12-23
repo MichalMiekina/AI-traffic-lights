@@ -3,8 +3,37 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { buildMap } from './Terrain'
 import * as dat from 'dat.gui'
+
+
 // hide canvas generating gallery images
 document.getElementById('c').style.display = 'none'
+
+function buildInput() {
+    let input = {
+        "worldName": "miejskie, duze skrzyzowanie",
+        "minInitGreenlightLen": 0,
+        "maxInitGreenlightLen": 70,
+        "singleLightBias": 6,
+        "allLightsBias": 3,
+        "numWorlds": 10,
+        "numPersistingWorlds": 4,
+        "numEpochs": 15
+        
+    }
+    
+    input.worldName = document.getElementsByClassName('selected-map')[0].id
+    input.minInitGreenlightLen = Number(document.getElementById('minInitGreenlightLen').value)
+    input.maxInitGreenlightLen = Number(document.getElementById('maxInitGreenlightLen').value)
+    input.singleLightBias = Number(document.getElementById('singleLightBias').value)
+    input.allLightsBias = Number(document.getElementById('allLightsBias').value)
+    input.numWorlds = Number(document.getElementById('numWorlds').value)
+    input.numPersistingWorlds = Number(document.getElementById('numPersistingWorlds').value)
+    input.numEpochs = Number(document.getElementById('numEpochs').value)
+
+    return input
+}
+
+
 
 function drawSingleMap(map, mapNumber) {
     const pointLight = new THREE.DirectionalLight(0xffffff, .9)
@@ -29,14 +58,31 @@ function drawMaps(data) {
         while (scene.children.length > 0) {
             scene.remove(scene.children[0]);
         }
+        console.log(data.worlds[i].name)
         drawSingleMap(data.worlds[i], i)
 
         var img = document.createElement('img')
         img.src = renderer.domElement.toDataURL("image/jpeg");
-        // document.body.appendChild(img)
+        img.id = data.worlds[i].name
+        img.className = 'world-map'
         document.getElementById('gallery-container').appendChild(img)
     }
-    
+    const galleryMaps = document.getElementsByClassName('world-map')
+
+    for (let i = 0; i < galleryMaps.length; i++) {
+        galleryMaps[i].addEventListener(
+            'click',
+            function () {
+                for (let j = 0; j < galleryMaps.length; j++) {
+                    galleryMaps[j].classList.remove('selected-map')
+                }
+                console.log('XD')
+                galleryMaps[i].classList.add('selected-map')
+            }
+
+        )
+    }
+
 }
 const gui = new dat.GUI()
 const scene = new THREE.Scene()
@@ -62,27 +108,13 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
 
 const tick = () => {
-    // for (let i = 0; i < controls.length; i++) {
-    //     controls[i].update()
-    //     renderers[i].render(scene, camera)
-    // }
     controls.update()
     renderer.render(scene, camera)
-    // Call tick again on the next frame
     window.requestAnimationFrame(tick)
 }
 
 const apiUrl = 'http://localhost:8080/api/'
-const data = {
-    "minInitGreenlightLen": 0,
-    "maxInitGreenlightLen": 70,
-    "singleLightBias": 6,
-    "allLightsBias": 3,
-    "numWorlds": 10,
-    "numPersistingWorlds": 4,
-    "numEpochs": 15,
-    "worldName": "miejskie, duze skrzyzowanie"
-}
+
 var token = ''
 document.getElementById("api-get").addEventListener(
     'click',
@@ -96,17 +128,18 @@ document.getElementById("api-get").addEventListener(
 document.getElementById("api-post").addEventListener(
     'click',
     function () {
-        console.log("POST")
+        let input = buildInput()
+        console.log("POST: ")
+        console.log(input)
         fetch(apiUrl + "learn", {
             method: 'POST',
-            body: JSON.stringify(data),
+            body: JSON.stringify(input),
             headers: {
                 'Content-Type': 'application/json'
             },
         })
             .then(response => response.json())
             .then(data => token = data.token)
-            // .then(_ => console.log(token))
-            .then(token => window.location.href = 'http://localhost:8080/plots?token='+token )
+            .then(token => window.location.href = 'http://localhost:8080/plots?token=' + token)
     }
 )
