@@ -4,6 +4,13 @@ const MiniCSSExtractPlugin = require('mini-css-extract-plugin')
 const path = require('path')
 
 module.exports = {
+    resolve: {
+        modules: ['node_modules'],
+        fallback: {
+            "http": false,
+            "https": false,
+        }
+    },
     entry:{
         script: path.resolve(__dirname, '../src/script.js'),
         home: path.resolve(__dirname, '../src/home.js'),
