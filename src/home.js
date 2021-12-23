@@ -107,6 +107,6 @@ document.getElementById("api-post").addEventListener(
             .then(response => response.json())
             .then(data => token = data.token)
             // .then(_ => console.log(token))
-            .then(token => window.location.replace('http://localhost:8080/plots?token='+token))
+            .then(token => window.location.href = 'http://localhost:8080/plots?token='+token )
     }
 )

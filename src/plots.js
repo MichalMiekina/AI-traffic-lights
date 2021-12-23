@@ -7,21 +7,24 @@ console.log(token)
 const statusUrl = 'http://localhost:8080/api/status/'
 
 
+function handleStatusUpdate(response) {
+    if (response.status == "running") {
+        console.log(response, "ZAMIEN TEN CONSOLE LOG NA AKTUALIZACJE WYKRESU")
+        session(token)
+    }
+    if (response.status == "done") {
+        console.log(response, "ZAMIEN TEN CONSOLELOG NA PRZEKIEROWANIE DO SYMULACJI ALBO WYŚWIETLENIE GUZIKA")
+    } else {
+        session(token)
+    }
+}
+
+
 function session(token) {
-    console.log('session()')
     setTimeout(() => {
-        let responseData = {}
         fetch(statusUrl + token)
             .then(response => response.json())
-            .then(data => responseData = data)
-
-        if (responseData.status == "done") {
-            console.log(responseData, "ZAMIEN TEN CONSOLELOG NA PRZEKIEROWANIE DO SYMULACJI ALBO WYŚWIETLENIE GUZIKA")
-        } else {
-            console.log(responseData, "ZAMIEN TEN CONSOLE LOG NA AKTUALIZACJE WYKRESU")
-            session(token)
-        }
-
+            .then(handleStatusUpdate)
     }, TIMEOUT)
 }
 session(token)
