@@ -2,20 +2,92 @@ import './css/three.css'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import * as dat from 'dat.gui'
-import json from './after.json';
-import { map_columns, map_rows, frames_amount } from './constants'
 import { Car, Vehicle } from './Car'
-import { buildMap } from './Terrain'
+import { World } from './Terrain'
 import { buildLights } from './lights'
+const params = new URLSearchParams(document.location.search);
+const token = params.get("token");
+const worldName = params.get("world")
+var simElapsedTime = 0
 
-function main() {
 
-    const params = new URLSearchParams(document.location.search);
-    const token = params.get("token");
-    const worldName = params.get("world")
+function getMap() {
+    let apiUrl = 'http://localhost:8080/api/'
+    return fetch(apiUrl + 'world/' + worldName)
+        .then(response => response.json())
 
-    // Scene
+}
+function getPlot() {
+    let statusUrl = 'http://localhost:8080/api/status/'
+    console.log(token)
+    return fetch(statusUrl + token)
+        .then(response => response.json())
+
+}
+
+function getMapAndPlot() {
+    return Promise.all([getMap(), getPlot()])
+}
+
+function main(map, plot) {
+    const map_rows = map.nodes.length
+    const map_columns = map.nodes[0].length
     const scene = new THREE.Scene()
+    const sizes = {
+        width: window.innerWidth,
+        height: window.innerHeight
+    }
+    const gui = new dat.GUI()
+    const canvas = document.querySelector('canvas.webgl')
+    const camera = new THREE.PerspectiveCamera(90, sizes.width / sizes.height, .1, 1000)
+    const renderer = new THREE.WebGLRenderer({
+        canvas: canvas
+    })
+    
+    renderer.setSize(sizes.width, sizes.height)
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+    scene.add(camera)
+    camera.position.x = 2
+    camera.position.y = 6
+    camera.position.z = 2
+    // Controls
+    const controls = new OrbitControls(camera, canvas)
+    controls.enableDamping = true
+    controls.target = new THREE.Vector3(map_columns, map_rows / 2, 0);
+    camera.position.x = map_columns
+    camera.position.y = map_rows / 2
+    camera.rotation.y = Math.PI / 2
+    camera.position.z = 20
+
+
+    buildListeners()
+
+    
+    buildWorlds(scene, map)
+    buildTicks(scene, controls, renderer, camera, plot, map_rows, map_columns)
+}
+
+
+function buildWorlds(scene, data) {
+    const map_rows = data.nodes.length
+    const map_columns = data.nodes[0].length
+
+    const world1 = World(data)
+    scene.add(world1)
+    const world2 = World(data)
+    scene.add(world2)
+
+    world2.position.x += map_columns + 1
+
+}
+
+function buildTicks(scene, controls, renderer, camera, plot, map_rows, map_columns) {
+    const { before, after } = plot
+    const json = before
+    console.log('before: ', before)
+    console.log('after: ', after)
+
+
     const pointLight = new THREE.DirectionalLight(0xffffff, .9)
     pointLight.position.x = 2
     pointLight.position.y = 3
@@ -23,84 +95,22 @@ function main() {
     scene.add(pointLight)
     scene.background = new THREE.Color(0x444444)
 
-    /**
-     * Sizes
-     */
-    const sizes = {
-        width: window.innerWidth,
-        height: window.innerHeight
-    }
-    // Debug
-    const gui = new dat.GUI()
-    // Canvas
-    const canvas = document.querySelector('canvas.webgl')
-
-
-    const camera = new THREE.PerspectiveCamera(90, sizes.width / sizes.height, .1, 1000)
-    scene.add(camera)
-    camera.position.x = 2
-    camera.position.y = 6
-    camera.position.z = 2
-    const gridHelper = new THREE.GridHelper(10, 10);
-    scene.add(gridHelper);
-    // Controls
-    const controls = new OrbitControls(camera, canvas)
-    controls.enableDamping = true
-
-    /**
-     * Renderer
-     */
-    const renderer = new THREE.WebGLRenderer({
-        canvas: canvas
-    })
-    renderer.setSize(sizes.width, sizes.height)
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
-
     const clock = new THREE.Clock()
 
     var vehicles_list = []
     var vehicles_ids_list = []
 
-    var simElapsedTime = 0
+
     var time_speed = document.getElementById("s1").getElementsByTagName("input")[0].value
     var prevElapsedTime = 0
     var frame_index = 0
-    var traffic_lights = buildLights(scene)
+    var traffic_lights = buildLights(scene, map_columns)
 
 
-    controls.target = new THREE.Vector3(map_columns / 2, map_rows / 2, 0);
-    camera.position.x = map_columns / 2
-    camera.position.y = map_rows / 2
-    camera.rotation.y = Math.PI / 2
-    camera.position.z = 10
+    const steps_amount = plot.before.steps.length
 
-
-    console.log(token)
-    const statusUrl = 'http://localhost:8080/api/status/'
-    const apiUrl = 'http://localhost:8080/api/'
-    // let jsons
-    fetch(apiUrl + 'world/' + worldName)
-        .then(response => response.json())
-        .then(data => buildMap(scene, data))
-
-
-    fetch(statusUrl + token)
-        .then(response => response.json())
-        .then(data => animate(data))
-
-
-    const tick = () => {
-        const elapsedTime = clock.getElapsedTime()
-        simElapsedTime += (elapsedTime - prevElapsedTime) * time_speed
-        time_speed = document.getElementById("s1").getElementsByTagName("input")[0].value
-        prevElapsedTime = elapsedTime
-
-        frame_index = Math.floor(simElapsedTime)
-
-        document.getElementById("part_value").textContent = (frame_index / frames_amount * 100).toFixed(1)
-
+    function tickLeft(json) {
         let current_cars = []
-
         for (let i = 0; i < json.steps[frame_index].cars.length; i++) {
             if (!vehicles_ids_list.includes(json.steps[frame_index].cars[i].id)) {
                 vehicles_list.push(new Vehicle(json.steps[frame_index].cars[i].id, Car()))
@@ -163,21 +173,30 @@ function main() {
                 }
             }
         }
+    }
+
+    const tick = () => {
+        const { before, after } = plot
+        const elapsedTime = clock.getElapsedTime()
+        simElapsedTime += (elapsedTime - prevElapsedTime) * time_speed
+        time_speed = document.getElementById("s1").getElementsByTagName("input")[0].value
+        prevElapsedTime = elapsedTime
+
+        frame_index = Math.floor(simElapsedTime)
+
+        document.getElementById("part_value").textContent = (frame_index / steps_amount * 100).toFixed(1)
+
+
+        tickLeft(before)
+        // tickRight(after)
+
 
         controls.update()
         renderer.render(scene, camera)
         window.requestAnimationFrame(tick)
     }
+
     tick()
-
-}
-
-function animate(jsons) {
-
-    const { before, after } = jsons
-    console.log(jsons)
-    console.log('before: ', before)
-    console.log('after: ', after)
 }
 
 window.addEventListener('resize', () => {
@@ -194,36 +213,42 @@ window.addEventListener('resize', () => {
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 })
 
-document.getElementById("part_change_slider").addEventListener(
-    'input',
-    function () {
-        simElapsedTime = (document.getElementById("part_change_slider").value / 100) * frames_amount
-    }
-)
+function buildListeners() {
+    console.log
+    document.getElementById("part_change_slider").addEventListener(
+        'input',
+        function () {
+            simElapsedTime = (document.getElementById("part_change_slider").value / 100) * steps_amount
+        }
+    )
 
-document.getElementById("default_part_button").addEventListener(
-    'click',
-    function () {
-        // TODO nice to have
-    }
-)
+    document.getElementById("default_part_button").addEventListener(
+        'click',
+        function () {
+            // TODO nice to have
+        }
+    )
 
-document.getElementById("speed_change_slider").addEventListener(
-    'input',
-    function () {
-        document.getElementById("speed_value").textContent = document.getElementById("speed_change_slider").value
-    }
-)
+    document.getElementById("speed_change_slider").addEventListener(
+        'input',
+        function () {
+            document.getElementById("speed_value").textContent = document.getElementById("speed_change_slider").value
+        }
+    )
 
-document.getElementById("default_speed_button").addEventListener(
-    'click',
-    function () {
-        document.getElementById("speed_change_slider").value = 1
-        document.getElementById("speed_value").textContent = document.getElementById("speed_change_slider").value
-    }
-)
+    document.getElementById("default_speed_button").addEventListener(
+        'click',
+        function () {
+            document.getElementById("speed_change_slider").value = 1
+            document.getElementById("speed_value").textContent = document.getElementById("speed_change_slider").value
+        }
+    )
 
-const test_object1 = Car()
+    const test_object1 = Car()
+
+}
+
+
 document.getElementById("dev-button").addEventListener(
     'click',
     function () {
@@ -244,19 +269,9 @@ document.getElementById("dev-button").addEventListener(
 )
 document.getElementById("uat-button").addEventListener(
     'click',
-    main()
-    // function () {
-    //     let jsons = loadJsons()
-    //     console.log(jsons)
-    //     controls.target = new THREE.Vector3(map_columns / 2, map_rows / 2, 0);
-    //     camera.position.x = map_columns / 2
-    //     camera.position.y = map_rows / 2
-    //     camera.rotation.y = Math.PI / 2
-    //     camera.position.z = 10
-    //     buildMap(scene)
-    //     tick()
-    //     // buildLights(scene)
-    // }
+    getMapAndPlot()
+        .then(([map, plot]) => main(map, plot))
+
 )
 
 document.getElementById("prod-button").addEventListener(
@@ -265,6 +280,3 @@ document.getElementById("prod-button").addEventListener(
         console.log('DEV')
     }
 )
-
-
-

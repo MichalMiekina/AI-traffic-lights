@@ -7,9 +7,10 @@ const token = params.get("token");
 
 console.log(token)
 const statusUrl = 'http://localhost:8080/api/status/'
-
+document.getElementById('animate').style.display = 'none'
 
 function handleStatusUpdate(response) {
+    const plotDiv = document.getElementById('plot')
     if (response.status == "running") {
         var data = [{x:[0,1,2], y:[3,2,1], type: 'bar'}];
 var layout = {fileopt : "overwrite", filename : "simple-node-example"};
@@ -19,12 +20,16 @@ var layout = {fileopt : "overwrite", filename : "simple-node-example"};
 	console.log(msg);
 });*/
         console.log(response, "ZAMIEN TEN CONSOLE LOG NA AKTUALIZACJE WYKRESU")
+        plotDiv.textContent = 'Calculating'
         session(token)
     }
     else if (response.status == "done") {
         console.log(response, "ZAMIEN TEN CONSOLELOG NA PRZEKIEROWANIE DO SYMULACJI ALBO WYŚWIETLENIE GUZIKA")
+        plotDiv.textContent = 'Done'
+        document.getElementById('animate').style.display = 'block'
     } else {
         console.log(response, "czekaj")
+        plotDiv.textContent = 'Loading...'
         session(token)
     }
 }

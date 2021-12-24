@@ -1,7 +1,7 @@
-import './css/index.css'
+import '../css/index.css'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-import { buildMap } from './Terrain'
+import { World } from '../Terrain'
 import * as dat from 'dat.gui'
 
 
@@ -20,19 +20,9 @@ function buildInput() {
         "numEpochs": Number(document.getElementById('numEpochs').value)
         
     }
-    
-    // input.worldName = document.getElementsByClassName('selected-map')[0].id
-    // input.minInitGreenlightLen = Number(document.getElementById('minInitGreenlightLen').value)
-    // input.maxInitGreenlightLen = Number(document.getElementById('maxInitGreenlightLen').value)
-    // input.singleLightBias = Number(document.getElementById('singleLightBias').value)
-    // input.allLightsBias = Number(document.getElementById('allLightsBias').value)
-    // input.numWorlds = Number(document.getElementById('numWorlds').value)
-    // input.numPersistingWorlds = Number(document.getElementById('numPersistingWorlds').value)
-    // input.numEpochs = Number(document.getElementById('numEpochs').value)
 
     return input
 }
-
 
 
 function drawSingleMap(map, mapNumber) {
@@ -43,7 +33,7 @@ function drawSingleMap(map, mapNumber) {
     scene.add(pointLight)
     scene.background = new THREE.Color(0xaaaaaa)
 
-    buildMap(scene, map)
+    scene.add(World(map))
     controls.target = new THREE.Vector3(map.nodes.length / 2, map.nodes[0].length / 2, 0);
     camera.position.x = map.nodes[0].length / 2
     camera.position.y = map.nodes.length / 2
@@ -75,7 +65,6 @@ function drawMaps(data) {
                 for (let j = 0; j < galleryMaps.length; j++) {
                     galleryMaps[j].classList.remove('selected-map')
                 }
-                console.log(galleryMaps)
                 galleryMaps[i].classList.add('selected-map')
             }
         )
@@ -126,8 +115,6 @@ document.getElementById("api-post").addEventListener(
     'click',
     function () {
         let input = buildInput()
-        console.log("POST: ")
-        console.log(input)
         fetch(apiUrl + "learn", {
             method: 'POST',
             body: JSON.stringify(input),

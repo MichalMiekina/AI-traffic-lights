@@ -1,7 +1,5 @@
 import json from './after.json';
 import * as THREE from 'three';
-import { map_columns } from './constants'
-
 
 const BULB_SIZE = .16
 
@@ -14,7 +12,7 @@ const HALF = .5
 const BULB_HEIGHT = 1.5
 
 
-function buildLights(scene) {
+function buildLights(scene, map_columns) {
     let traffic_lights = []
 
     json.steps[0].lights.forEach(light => {

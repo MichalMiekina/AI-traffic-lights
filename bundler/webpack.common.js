@@ -13,7 +13,7 @@ module.exports = {
     },
     entry:{
         script: path.resolve(__dirname, '../src/script.js'),
-        home: path.resolve(__dirname, '../src/home.js'),
+        home: path.resolve(__dirname, '../src/js/home.js'),
         plots: path.resolve(__dirname, '../src/plots.js'),
     },
     output:

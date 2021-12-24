@@ -8,8 +8,8 @@ class Vehicle{
 }
 
 function Car() {
-    var colors = [0xff0000, 0x00ff00, 0x0000ff, 0xff00ff, 0xffff00]
-    var color_index = Math.floor(Math.random() * colors.length)
+    const colors = [0xff0000, 0x00ff00, 0x0000ff, 0xff00ff, 0xffff00,0xffffff]
+    let color_index = Math.floor(Math.random() * colors.length)
     var txtColor = colors[color_index]
     var txtColor_string = txtColor.toString(16)
     while(txtColor_string.length!=6){

@@ -48,7 +48,8 @@ function createGrass() {
 }
 
 
-function buildMap(scene, map) {
+function World(map){
+    const world = new THREE.Group()
     const nodesMeshesList = []
     for (let i = 0; i < map.nodes.length; i++) {
         for (let j = 0; j < map.nodes[i].length; j++) {
@@ -64,10 +65,12 @@ function buildMap(scene, map) {
             mesh.position.x = j + .5
             mesh.position.y = map.nodes[i].length - i - .5
             mesh.position.z = 1
-            scene.add(mesh)
+            world.add(mesh)
             nodesMeshesList.push(mesh)
         }
     }
+    return world
 }
 
-export { buildMap }
+
+export { World }
