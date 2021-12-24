@@ -1,5 +1,3 @@
-// import map from './world2.json';
-// import {map} from './home'
 import * as THREE from 'three';
 
 
@@ -66,7 +64,6 @@ function buildMap(scene, map) {
             mesh.position.x = j + .5
             mesh.position.y = map.nodes[i].length - i - .5
             mesh.position.z = 1
-
             scene.add(mesh)
             nodesMeshesList.push(mesh)
         }

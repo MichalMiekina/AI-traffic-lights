@@ -10,25 +10,25 @@ document.getElementById('c').style.display = 'none'
 
 function buildInput() {
     let input = {
-        "worldName": "miejskie, duze skrzyzowanie",
-        "minInitGreenlightLen": 0,
-        "maxInitGreenlightLen": 70,
-        "singleLightBias": 6,
-        "allLightsBias": 3,
-        "numWorlds": 10,
-        "numPersistingWorlds": 4,
-        "numEpochs": 15
+        "worldName": document.getElementsByClassName('selected-map')[0].id,
+        "minInitGreenlightLen": Number(document.getElementById('minInitGreenlightLen').value),
+        "maxInitGreenlightLen": Number(document.getElementById('maxInitGreenlightLen').value),
+        "singleLightBias": Number(document.getElementById('singleLightBias').value),
+        "allLightsBias": Number(document.getElementById('allLightsBias').value),
+        "numWorlds": Number(document.getElementById('numWorlds').value),
+        "numPersistingWorlds": Number(document.getElementById('numPersistingWorlds').value),
+        "numEpochs": Number(document.getElementById('numEpochs').value)
         
     }
     
-    input.worldName = document.getElementsByClassName('selected-map')[0].id
-    input.minInitGreenlightLen = Number(document.getElementById('minInitGreenlightLen').value)
-    input.maxInitGreenlightLen = Number(document.getElementById('maxInitGreenlightLen').value)
-    input.singleLightBias = Number(document.getElementById('singleLightBias').value)
-    input.allLightsBias = Number(document.getElementById('allLightsBias').value)
-    input.numWorlds = Number(document.getElementById('numWorlds').value)
-    input.numPersistingWorlds = Number(document.getElementById('numPersistingWorlds').value)
-    input.numEpochs = Number(document.getElementById('numEpochs').value)
+    // input.worldName = document.getElementsByClassName('selected-map')[0].id
+    // input.minInitGreenlightLen = Number(document.getElementById('minInitGreenlightLen').value)
+    // input.maxInitGreenlightLen = Number(document.getElementById('maxInitGreenlightLen').value)
+    // input.singleLightBias = Number(document.getElementById('singleLightBias').value)
+    // input.allLightsBias = Number(document.getElementById('allLightsBias').value)
+    // input.numWorlds = Number(document.getElementById('numWorlds').value)
+    // input.numPersistingWorlds = Number(document.getElementById('numPersistingWorlds').value)
+    // input.numEpochs = Number(document.getElementById('numEpochs').value)
 
     return input
 }
@@ -58,7 +58,6 @@ function drawMaps(data) {
         while (scene.children.length > 0) {
             scene.remove(scene.children[0]);
         }
-        console.log(data.worlds[i].name)
         drawSingleMap(data.worlds[i], i)
 
         var img = document.createElement('img')
@@ -76,13 +75,11 @@ function drawMaps(data) {
                 for (let j = 0; j < galleryMaps.length; j++) {
                     galleryMaps[j].classList.remove('selected-map')
                 }
-                console.log('XD')
+                console.log(galleryMaps)
                 galleryMaps[i].classList.add('selected-map')
             }
-
         )
     }
-
 }
 const gui = new dat.GUI()
 const scene = new THREE.Scene()
@@ -140,6 +137,6 @@ document.getElementById("api-post").addEventListener(
         })
             .then(response => response.json())
             .then(data => token = data.token)
-            .then(token => window.location.href = 'http://localhost:8080/plots?token=' + token)
+            .then(token => window.location.href = 'http://localhost:8080/plots?token=' + token+'&world='+input.worldName)
     }
 )

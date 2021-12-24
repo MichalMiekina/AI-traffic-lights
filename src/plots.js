@@ -1,6 +1,6 @@
 const plotly = require("plotly")
 //znajdz jak uzyc tego offline
-const TIMEOUT = 2000
+const TIMEOUT = 1000
 
 const params = new URLSearchParams(document.location.search);
 const token = params.get("token");
@@ -30,6 +30,7 @@ var layout = {fileopt : "overwrite", filename : "simple-node-example"};
 }
 
 
+
 function session(token) {
     setTimeout(() => {
         fetch(statusUrl + token)
@@ -38,3 +39,10 @@ function session(token) {
     }, TIMEOUT)
 }
 session(token)
+
+document.getElementById("animate").addEventListener(
+    'click',
+    function () {
+        window.location.href = 'http://localhost:8080/three?token=' + token+'&world='+params.get('world')
+    }
+)
