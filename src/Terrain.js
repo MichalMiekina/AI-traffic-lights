@@ -48,7 +48,7 @@ function createGrass() {
 }
 
 
-function World(map){
+function buildWorldMesh(map){
     const world = new THREE.Group()
     const nodesMeshesList = []
     for (let i = 0; i < map.nodes.length; i++) {
@@ -73,4 +73,4 @@ function World(map){
 }
 
 
-export { World }
+export { buildWorldMesh }

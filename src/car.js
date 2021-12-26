@@ -1,21 +1,21 @@
 import * as THREE from 'three'
 
-class Vehicle{
-    constructor(id, vehicle_object){
+class Vehicle {
+    constructor(id, vehicle_object) {
         this.id = id
         this.vehicle_object = vehicle_object
     }
 }
 
-function Car() {
-    const colors = [0xff0000, 0x00ff00, 0x0000ff, 0xff00ff, 0xffff00,0xffffff]
+function buildCarMesh(x, y) {
+    const colors = [0xff0000, 0x00ff00, 0x0000ff, 0xff00ff, 0xffff00, 0xffffff]
     let color_index = Math.floor(Math.random() * colors.length)
     var txtColor = colors[color_index]
     var txtColor_string = txtColor.toString(16)
-    while(txtColor_string.length!=6){
-        txtColor_string = "00"+txtColor_string
+    while (txtColor_string.length != 6) {
+        txtColor_string = "00" + txtColor_string
     }
-    txtColor_string = "#"+txtColor_string
+    txtColor_string = "#" + txtColor_string
     const car = new THREE.Group()
 
     const carFrontTexture = getCarFrontTexture(txtColor_string)
@@ -43,7 +43,7 @@ function Car() {
     car.add(frontWheel)
 
     const main = new THREE.Mesh(
-        new THREE.BoxBufferGeometry(4,2,8,4),
+        new THREE.BoxBufferGeometry(4, 2, 8, 4),
         [
             new THREE.MeshLambertMaterial({ color: txtColor }),
             new THREE.MeshLambertMaterial({ color: txtColor }),
@@ -51,19 +51,19 @@ function Car() {
             new THREE.MeshLambertMaterial({ color: txtColor }),
             new THREE.MeshLambertMaterial({ map: carFrontLampsTexture }),
             new THREE.MeshLambertMaterial({ color: txtColor }),
-        ]   
+        ]
     )
 
-    main.position.y=0.5
-    main.position.z=0
+    main.position.y = 0.5
+    main.position.z = 0
     car.add(main)
 
     var lamp = new THREE.RectAreaLight(0xffffff, 1, 1, 1)
-    lamp.position.set(0,0,0)
+    lamp.position.set(0, 0, 0)
     // car.add(lamp)
 
     const cabin = new THREE.Mesh(
-        new THREE.BoxBufferGeometry(4,2,5,4),
+        new THREE.BoxBufferGeometry(4, 2, 5, 4),
         [
             new THREE.MeshLambertMaterial({ map: carSideTexture }),
             new THREE.MeshLambertMaterial({ map: carSideTexture }),
@@ -73,67 +73,70 @@ function Car() {
             new THREE.MeshLambertMaterial({ color: txtColor }),
 
         ]
-        
+
     )
-    cabin.position.y=2.5
-    cabin.position.z=0
+    cabin.position.y = 2.5
+    cabin.position.z = 0
     car.add(cabin)
-    
-    car.position.z=1.1
-    car.rotation.x=Math.PI/2
-    car.scale.set(.05,.05,.05)
+
+    car.position.z = 1.1
+    car.rotation.x = Math.PI / 2
+    car.scale.set(.05, .05, .05)
+
+    car.position.x = x
+    car.position.y = y
 
     return car
 }
 
 
-function getCarFrontTexture(txtColor_string){
-    const  canvas = document.createElement("canvas")
-    canvas.width=64
-    canvas.height=64
-    const context = canvas.getContext("2d")
-
-    context.fillStyle = txtColor_string
-    context.fillRect(0,0,64,64)
-
-    context.fillStyle = "#888888"
-    context.fillRect(8,8,48,64)
-
-    return new THREE.CanvasTexture(canvas)
-}
-
-function getCarSideTexture(txtColor_string){
-    const  canvas = document.createElement("canvas")
-    canvas.width=128
-    canvas.height=64
-    const context = canvas.getContext("2d")
-
-    context.fillStyle = txtColor_string
-    context.fillRect(0,0,128,64)
-
-    context.fillStyle = "#888888"
-    context.fillRect(8,8,40,64)
-    
-    context.fillStyle = "#888888"
-    context.fillRect(60,8,64,64)
-
-    return new THREE.CanvasTexture(canvas)
-}
-
-function getCarFrontLamps(txtColor_string){
+function getCarFrontTexture(txtColor_string) {
     const canvas = document.createElement("canvas")
-    canvas.width=128
-    canvas.height=64
+    canvas.width = 64
+    canvas.height = 64
+    const context = canvas.getContext("2d")
+
+    context.fillStyle = txtColor_string
+    context.fillRect(0, 0, 64, 64)
+
+    context.fillStyle = "#888888"
+    context.fillRect(8, 8, 48, 64)
+
+    return new THREE.CanvasTexture(canvas)
+}
+
+function getCarSideTexture(txtColor_string) {
+    const canvas = document.createElement("canvas")
+    canvas.width = 128
+    canvas.height = 64
+    const context = canvas.getContext("2d")
+
+    context.fillStyle = txtColor_string
+    context.fillRect(0, 0, 128, 64)
+
+    context.fillStyle = "#888888"
+    context.fillRect(8, 8, 40, 64)
+
+    context.fillStyle = "#888888"
+    context.fillRect(60, 8, 64, 64)
+
+    return new THREE.CanvasTexture(canvas)
+}
+
+function getCarFrontLamps(txtColor_string) {
+    const canvas = document.createElement("canvas")
+    canvas.width = 128
+    canvas.height = 64
     const context = canvas.getContext('2d')
 
     context.fillStyle = txtColor_string
-    context.fillRect(0,0,128,64)
-    
+    context.fillRect(0, 0, 128, 64)
+
     context.fillStyle = '#FFFF33'
-    context.fillRect(4,4,16,16)
-    context.fillRect(108,4,16,16)
+    context.fillRect(4, 4, 16, 16)
+    context.fillRect(108, 4, 16, 16)
 
     return new THREE.CanvasTexture(canvas)
 }
 
-export {Car, Vehicle}
+export { buildCarMesh, Vehicle }

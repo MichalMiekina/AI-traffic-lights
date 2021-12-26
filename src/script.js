@@ -2,13 +2,130 @@ import './css/three.css'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import * as dat from 'dat.gui'
-import { Car, Vehicle } from './Car'
-import { World } from './Terrain'
-import { buildLights } from './lights'
+import { buildCarMesh, Vehicle } from './Car'
+import { buildWorldMesh } from './Terrain'
+import { buildLight, buildLights } from './lights'
+
+const scene = new THREE.Scene()
 const params = new URLSearchParams(document.location.search);
 const token = params.get("token");
 const worldName = params.get("world")
 var simElapsedTime = 0
+
+class Car {
+    constructor(id, x, y) {
+        this.id = id
+        this.mesh = buildCarMesh(x, y)
+    }
+}
+
+class Light {
+    constructor(id, x ,y, shift){
+        this.id = id
+        this.mesh = buildLight()
+        this.mesh.position.x = x + shift
+        this.mesh.position.y = y
+        this.mesh.position.z = 2
+    }
+}
+
+class World {
+    constructor(width, height, map, course, shift) {
+        this.shift = shift
+        this.width = width
+        this.height = height
+        this.cars = []
+        this.lights = []
+        for(let i=0;i<course.steps[0].lights.length;i++){
+            let id = course.steps[0].lights[i].id
+            console.log(id.split('-'), id.split('-')[0], id.split('-')[1])
+            let x = parseFloat(id.split('-')[0]) + .5
+            let y = this.height - parseFloat(id.split('-')[1]) - .5
+            let light = new Light(id, x, y, this.shift)
+            this.lights.push(light)
+            scene.add(light.mesh)
+            console.log(light.mesh)
+        }
+        
+        this.map = buildWorldMesh(map)
+        this.map.position.x += shift
+        scene.add(this.map)
+    }
+    updateWorld(step0, step1) {
+        this.updateCars(step0.cars, step1.cars)
+
+    }
+    updateLights(lights){
+        
+    }
+    updateCars(cars0, cars1) {
+        // removing cars that left the world
+        let existingCarsID = cars0.map(a => a.id)
+        for (let i = 0; i < this.cars.length; i++) {
+            if (!existingCarsID.includes(this.cars[i].id)) {
+                this.removeSingleCar(this.cars[i].id)
+            }
+        }
+
+        // creating and moving cars
+        for (let i = 0; i < cars0.length; i++) {
+            this.updateSingleCar(cars0[i])
+        }
+
+        for (let i = 0; i < this.cars.length; i++) {
+            if (cars0.map(a => a.id).includes(this.cars[i].id) && cars1.map(a => a.id).includes(this.cars[i].id)) {
+                this.updateCarRotation(cars0, cars1, this.cars[i].id)
+            }
+
+        }
+    }
+
+    updateSingleCar({ id, x, y }) {
+        let car = this.findCar(id)
+        // create car if not exists
+        if (!car) {
+            car = new Car(id, x, y)
+            this.cars.push(car)
+            scene.add(car.mesh)
+        }
+        // set car position
+        car.mesh.position.x = x + this.shift
+        car.mesh.position.y = this.height - y
+    }
+
+    updateCarRotation(cars0, cars1, id) {
+        let step0 = cars0.find(obj => obj.id == id)
+        let step1 = cars1.find(obj => obj.id == id)
+
+        let diff_x = step1.x - step0.x
+        let diff_y = step1.y - step0.y
+
+        if (diff_x < 0 && diff_y == 0) {
+            this.findCar(id).mesh.rotation.y = Math.PI * (3 / 2)
+        }
+        else if (diff_x > 0 && diff_y == 0) {
+            this.findCar(id).mesh.rotation.y = Math.PI * (1 / 2)
+        }
+        else if (diff_x == 0 && diff_y < 0) {
+            this.findCar(id).mesh.rotation.y = Math.PI * 0
+        }
+        else if (diff_x == 0 && diff_y > 0) {
+            this.findCar(id).mesh.rotation.y = Math.PI * 1
+        }
+    }
+
+    removeSingleCar(id) {
+        // remove mesh
+        let car = this.findCar(id)
+        scene.remove(car.mesh)
+        // remove car object from array
+        let index = this.cars.findIndex(obj => obj.id == id)
+        this.cars.splice(index, 1)
+    }
+    findCar(id) {
+        return this.cars.find(obj => obj.id == id)
+    }
+}
 
 
 function getMap() {
@@ -30,9 +147,10 @@ function getMapAndPlot() {
 }
 
 function main(map, plot) {
+    console.log(plot)
     const map_rows = map.nodes.length
     const map_columns = map.nodes[0].length
-    const scene = new THREE.Scene()
+
     const sizes = {
         width: window.innerWidth,
         height: window.innerHeight
@@ -43,7 +161,7 @@ function main(map, plot) {
     const renderer = new THREE.WebGLRenderer({
         canvas: canvas
     })
-    
+
     renderer.setSize(sizes.width, sizes.height)
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
     scene.add(camera)
@@ -62,30 +180,16 @@ function main(map, plot) {
 
     buildListeners()
 
-    
-    buildWorlds(scene, map)
-    buildTicks(scene, controls, renderer, camera, plot, map_rows, map_columns)
+    const worldL = new World(map_columns, map_rows, map, plot.before, 0)
+
+    const worldR = new World(map_columns, map_rows, map, plot.after, 16)
+
+    buildTicks(scene, controls, renderer, camera, plot, map_rows, map_columns, worldL, worldR)
 }
 
 
-function buildWorlds(scene, data) {
-    const map_rows = data.nodes.length
-    const map_columns = data.nodes[0].length
 
-    const world1 = World(data)
-    scene.add(world1)
-    const world2 = World(data)
-    scene.add(world2)
-
-    world2.position.x += map_columns + 1
-
-}
-
-function buildTicks(scene, controls, renderer, camera, plot, map_rows, map_columns) {
-    const { before, after } = plot
-    const json = before
-    console.log('before: ', before)
-    console.log('after: ', after)
+function buildTicks(scene, controls, renderer, camera, plot, map_rows, map_columns, worldL, worldR) {
 
 
     const pointLight = new THREE.DirectionalLight(0xffffff, .9)
@@ -97,83 +201,14 @@ function buildTicks(scene, controls, renderer, camera, plot, map_rows, map_colum
 
     const clock = new THREE.Clock()
 
-    var vehicles_list = []
-    var vehicles_ids_list = []
-
 
     var time_speed = document.getElementById("s1").getElementsByTagName("input")[0].value
     var prevElapsedTime = 0
     var frame_index = 0
-    var traffic_lights = buildLights(scene, map_columns)
+    // var traffic_lights = buildLights(scene, map_columns)
 
 
     const steps_amount = plot.before.steps.length
-
-    function tickLeft(json) {
-        let current_cars = []
-        for (let i = 0; i < json.steps[frame_index].cars.length; i++) {
-            if (!vehicles_ids_list.includes(json.steps[frame_index].cars[i].id)) {
-                vehicles_list.push(new Vehicle(json.steps[frame_index].cars[i].id, Car()))
-                // console.log(vehicles_list.at(-1).)
-                vehicles_ids_list.push(json.steps[frame_index].cars[i].id)
-                scene.add(vehicles_list.at(-1).vehicle_object)
-                vehicles_list.at(-1).vehicle_object.position.x = json.steps[frame_index].cars[i].x
-                vehicles_list.at(-1).vehicle_object.position.y = json.steps[frame_index].cars[i].y
-            }
-            current_cars.push(json.steps[frame_index].cars[i].id)
-        }
-
-        for (let i = 0; i < vehicles_list.length; i++) {
-            if (!current_cars.includes(vehicles_list[i].id)) {
-                scene.remove(vehicles_list[i].vehicle_object)
-
-            }
-        }
-
-        for (let i = 0; i < traffic_lights.length; i++) {
-            if (json.steps[frame_index].lights[i].color == "green") {
-                traffic_lights[i].traffic_light_object.material = new THREE.MeshLambertMaterial({ color: 0x00ff00 })
-            }
-            if (json.steps[frame_index].lights[i].color == "red") {
-                traffic_lights[i].traffic_light_object.material = new THREE.MeshLambertMaterial({ color: 0xff0000 })
-            }
-            if (json.steps[frame_index].lights[i].color == "amber") {
-                traffic_lights[i].traffic_light_object.material = new THREE.MeshLambertMaterial({ color: 0xffa500 })
-            }
-        }
-
-
-        for (let i = 0; i < vehicles_list.length; i++) {
-            for (let j = 0; j < json.steps[frame_index].cars.length; j++) {
-                if (vehicles_list[i].id == json.steps[frame_index].cars[j].id) {
-
-                    for (let k = 0; k < json.steps[frame_index + 1].cars.length; k++) {
-                        if (vehicles_list[i].id == json.steps[frame_index + 1].cars[k].id) {
-
-                            vehicles_list[i].vehicle_object.position.x = json.steps[frame_index].cars[j].x + (json.steps[frame_index + 1].cars[k].x - json.steps[frame_index].cars[j].x) * ((simElapsedTime) % 1)
-                            vehicles_list[i].vehicle_object.position.y = (map_rows - json.steps[frame_index].cars[j].y) + ((map_rows - json.steps[frame_index + 1].cars[k].y) - (map_rows - json.steps[frame_index].cars[j].y)) * ((simElapsedTime) % 1)
-
-                            let diff_x = json.steps[frame_index + 1].cars[k].x - json.steps[frame_index].cars[j].x
-                            let diff_y = json.steps[frame_index + 1].cars[k].y - json.steps[frame_index].cars[j].y
-
-                            if (diff_x < 0 && diff_y == 0) {
-                                vehicles_list[i].vehicle_object.rotation.y = Math.PI * (3 / 2)
-                            }
-                            if (diff_x > 0 && diff_y == 0) {
-                                vehicles_list[i].vehicle_object.rotation.y = Math.PI * (1 / 2)
-                            }
-                            if (diff_x == 0 && diff_y < 0) {
-                                vehicles_list[i].vehicle_object.rotation.y = Math.PI * 0
-                            }
-                            if (diff_x == 0 && diff_y > 0) {
-                                vehicles_list[i].vehicle_object.rotation.y = Math.PI * 1
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
 
     const tick = () => {
         const { before, after } = plot
@@ -186,10 +221,8 @@ function buildTicks(scene, controls, renderer, camera, plot, map_rows, map_colum
 
         document.getElementById("part_value").textContent = (frame_index / steps_amount * 100).toFixed(1)
 
-
-        tickLeft(before)
-        // tickRight(after)
-
+        worldL.updateWorld(before.steps[frame_index], before.steps[frame_index + 1])
+        worldR.updateWorld(after.steps[frame_index], after.steps[frame_index + 1])
 
         controls.update()
         renderer.render(scene, camera)
@@ -243,11 +276,7 @@ function buildListeners() {
             document.getElementById("speed_value").textContent = document.getElementById("speed_change_slider").value
         }
     )
-
-    const test_object1 = Car()
-
 }
-
 
 document.getElementById("dev-button").addEventListener(
     'click',
@@ -260,10 +289,8 @@ document.getElementById("dev-button").addEventListener(
         // Objects
 
         scene.add(test_object1)
-        // test_car.rotation.x = 0
         test_object1.position.x = 0
         test_object1.rotation.x = Math.PI * 2
-        // test_car.position.y = 7.5
         console.log(test_object1.position.x, test_object1.position.y, test_object1.position.z)
     }
 )

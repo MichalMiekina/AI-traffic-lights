@@ -1,7 +1,7 @@
 import '../css/index.css'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-import { World } from '../Terrain'
+import { buildWorldMesh } from '../Terrain'
 import * as dat from 'dat.gui'
 
 
@@ -33,7 +33,7 @@ function drawSingleMap(map, mapNumber) {
     scene.add(pointLight)
     scene.background = new THREE.Color(0xaaaaaa)
 
-    scene.add(World(map))
+    scene.add(buildWorldMesh(map))
     controls.target = new THREE.Vector3(map.nodes.length / 2, map.nodes[0].length / 2, 0);
     camera.position.x = map.nodes[0].length / 2
     camera.position.y = map.nodes.length / 2
