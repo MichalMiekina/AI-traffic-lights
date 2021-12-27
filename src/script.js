@@ -2,9 +2,9 @@ import './css/three.css'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import * as dat from 'dat.gui'
-import { buildCarMesh, Vehicle } from './Car'
+import { buildCarMesh } from './Car'
 import { buildWorldMesh } from './Terrain'
-import { buildLight, buildLights } from './lights'
+import { buildLight } from './lights'
 
 const scene = new THREE.Scene()
 const params = new URLSearchParams(document.location.search);
@@ -20,12 +20,26 @@ class Car {
 }
 
 class Light {
-    constructor(id, x ,y, shift){
+    constructor(id, height, shift){
         this.id = id
+        let [y, x, side] = id.split('-')
         this.mesh = buildLight()
-        this.mesh.position.x = x + shift
-        this.mesh.position.y = y
-        this.mesh.position.z = 2
+        this.mesh.position.x = parseFloat(x) + shift +.5
+        this.mesh.position.y = height - y -.5
+        this.mesh.position.z = 1.5
+
+        if (side == 'top') {
+            this.mesh.position.y += .5
+        }
+        if (side == 'bottom') {
+            this.mesh.position.y -= .5
+        }
+        if (side == 'left') {
+            this.mesh.position.x -= .5
+        }
+        if (side == 'right') {
+            this.mesh.position.x += .5
+        }
     }
 }
 
@@ -38,13 +52,10 @@ class World {
         this.lights = []
         for(let i=0;i<course.steps[0].lights.length;i++){
             let id = course.steps[0].lights[i].id
-            console.log(id.split('-'), id.split('-')[0], id.split('-')[1])
-            let x = parseFloat(id.split('-')[0]) + .5
-            let y = this.height - parseFloat(id.split('-')[1]) - .5
-            let light = new Light(id, x, y, this.shift)
+            
+            let light = new Light(id, height, this.shift)
             this.lights.push(light)
             scene.add(light.mesh)
-            console.log(light.mesh)
         }
         
         this.map = buildWorldMesh(map)
@@ -53,9 +64,25 @@ class World {
     }
     updateWorld(step0, step1) {
         this.updateCars(step0.cars, step1.cars)
+        this.updateLights(step0.lights)
 
     }
     updateLights(lights){
+        for(let i=0;i<this.lights.length;i++){
+            this.updateLightColor(lights, this.lights[i])
+        }
+    }
+    updateLightColor(lights, {id, mesh}){
+        let {color} = lights.find(obj => obj.id == id)
+        if(color == 'red'){
+            mesh.children[0].material.color = {r:1, g:0, b: 0}
+        }
+        if(color == 'green'){
+            mesh.children[0].material.color = {r:0, g:1, b: 0}
+        }
+        if(color == 'amber'){
+            mesh.children[0].material.color = {r:1, g:1, b: 0}
+        }
         
     }
     updateCars(cars0, cars1) {

@@ -1,12 +1,5 @@
 import * as THREE from 'three'
 
-class Vehicle {
-    constructor(id, vehicle_object) {
-        this.id = id
-        this.vehicle_object = vehicle_object
-    }
-}
-
 function buildCarMesh(x, y) {
     const colors = [0xff0000, 0x00ff00, 0x0000ff, 0xff00ff, 0xffff00, 0xffffff]
     let color_index = Math.floor(Math.random() * colors.length)
@@ -60,7 +53,6 @@ function buildCarMesh(x, y) {
 
     var lamp = new THREE.RectAreaLight(0xffffff, 1, 1, 1)
     lamp.position.set(0, 0, 0)
-    // car.add(lamp)
 
     const cabin = new THREE.Mesh(
         new THREE.BoxBufferGeometry(4, 2, 5, 4),
@@ -139,4 +131,4 @@ function getCarFrontLamps(txtColor_string) {
     return new THREE.CanvasTexture(canvas)
 }
 
-export { buildCarMesh, Vehicle }
+export { buildCarMesh }
