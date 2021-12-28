@@ -1,4 +1,4 @@
-const plotly = require("plotly")
+var Plotly = require('plotly.js-dist-min')
 //znajdz jak uzyc tego offline
 const TIMEOUT = 1000
 
@@ -8,28 +8,55 @@ const token = params.get("token");
 console.log(token)
 const statusUrl = 'http://localhost:8080/api/status/'
 document.getElementById('animate').style.display = 'none'
+const plotDiv = document.getElementById("header")
+
+
+function plot(plot){
+
+
+
+    var a = {
+
+        y: plot,
+        mode: 'markers',
+        name: "relative cost of epoch",
+    };
+    
+    var b = {
+        y: plot,
+        name: "smoothened learning curve",
+        type: "scatter",
+        mode: 'lines',
+        line:{
+        shape: "spline",
+        smoothing: "1.3"
+        }
+    };
+    
+    var plotData = [a,b];
+    
+    var layout = {
+        title: 'Learning Curve',
+        yaxis: {range: [0, 1.1]},
+        yaxis2: { range: [0, 1.1]}
+    };
+
+    Plotly.newPlot('plot', plotData, layout);
+}
+
 
 function handleStatusUpdate(response) {
-    const plotDiv = document.getElementById('plot')
     if (response.status == "running") {
-        var data = [{x:[0,1,2], y:[3,2,1], type: 'bar'}];
-var layout = {fileopt : "overwrite", filename : "simple-node-example"};
-
-/*plotly.plot(data, layout, function (err, msg) {
-	if (err) return console.log(err);
-	console.log(msg);
-});*/
-        console.log(response, "ZAMIEN TEN CONSOLE LOG NA AKTUALIZACJE WYKRESU")
-        plotDiv.textContent = 'Calculating'
+        plotDiv.textContent = 'Running a session...'
+        plot(response.plot)
         session(token)
     }
     else if (response.status == "done") {
-        console.log(response, "ZAMIEN TEN CONSOLELOG NA PRZEKIEROWANIE DO SYMULACJI ALBO WYŚWIETLENIE GUZIKA")
-        plotDiv.textContent = 'Done'
+        plot(response.plot)
+        plotDiv.textContent = 'Session finished'
         document.getElementById('animate').style.display = 'block'
     } else {
-        console.log(response, "czekaj")
-        plotDiv.textContent = 'Loading...'
+        plotDiv.textContent = 'Waiting for first epoch to finish...'
         session(token)
     }
 }
