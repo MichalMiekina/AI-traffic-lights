@@ -1,6 +1,7 @@
 var Plotly = require('plotly.js-dist-min')
 //znajdz jak uzyc tego offline
-const TIMEOUT = 1000
+const TIMEOUT = 1500
+const UPPER_PLOT_RANGE = 1.5
 
 const params = new URLSearchParams(document.location.search);
 const token = params.get("token");
@@ -9,6 +10,7 @@ console.log(token)
 const statusUrl = 'http://localhost:8080/api/status/'
 document.getElementById('animate').style.display = 'none'
 const plotDiv = document.getElementById("header")
+
 
 
 function plot(plot){
@@ -37,8 +39,8 @@ function plot(plot){
     
     var layout = {
         title: 'Learning Curve',
-        yaxis: {range: [0, 1.1]},
-        yaxis2: { range: [0, 1.1]}
+        yaxis: {range: [0, UPPER_PLOT_RANGE]},
+        yaxis2: { range: [0, UPPER_PLOT_RANGE]}
     };
 
     Plotly.newPlot('plot', plotData, layout);
