@@ -1,5 +1,127 @@
 import * as THREE from 'three';
+import {Light} from './lights'
+import {Car} from './Car'
 
+class World {
+    constructor(scene, width, height, map, course, shift) {
+        this.scene = scene
+        this.shift = shift
+        this.width = width
+        this.height = height
+        this.cars = []
+        this.lights = []
+        for(let i=0;i<course.steps[0].lights.length;i++){
+            let id = course.steps[0].lights[i].id
+            
+            let light = new Light(id, height, this.shift)
+            this.lights.push(light)
+            this.scene.add(light.mesh)
+        }
+        
+        this.map = buildWorldMesh(map)
+        this.map.position.x += shift
+        this.scene.add(this.map)
+    }
+    updateWorld(step0, step1, simElapsedTime) {
+        this.updateCars(step0.cars, step1.cars, simElapsedTime)
+        this.updateLights(step0.lights)
+
+    }
+    updateLights(lights){
+        for(let i=0;i<this.lights.length;i++){
+            this.updateLightColor(lights, this.lights[i])
+        }
+    }
+    updateLightColor(lights, {id, mesh}){
+        let {color} = lights.find(obj => obj.id == id)
+        if(color == 'red'){
+            mesh.children[0].material.color = {r:1, g:0, b: 0}
+        }
+        if(color == 'green'){
+            mesh.children[0].material.color = {r:0, g:1, b: 0}
+        }
+        if(color == 'amber'){
+            mesh.children[0].material.color = {r:1, g:1, b: 0}
+        }
+        
+    }
+    updateCars(cars0, cars1, simElapsedTime) {
+        // removing cars that left the world
+        let existingCarsID = cars0.map(a => a.id)
+        for (let i = 0; i < this.cars.length; i++) {
+            if (!existingCarsID.includes(this.cars[i].id)) {
+                this.removeSingleCar(this.cars[i].id)
+            }
+        }
+
+        // creating and moving cars
+        for (let i = 0; i < cars0.length; i++) {
+            if (cars0.map(a => a.id).includes(cars0[i].id) && cars1.map(a => a.id).includes(cars0[i].id)) {
+                this.updateCarPosition(cars0, cars1, cars0[i], simElapsedTime)
+            }
+            
+        }
+
+        for (let i = 0; i < this.cars.length; i++) {
+            if (cars0.map(a => a.id).includes(this.cars[i].id) && cars1.map(a => a.id).includes(this.cars[i].id)) {
+                this.updateCarRotation(cars0, cars1, this.cars[i].id)
+            }
+
+        }
+    }
+
+    updateCarPosition(cars0, cars1, { id, x, y }, simElapsedTime) {
+        let car = this.findCar(id)
+        // create car if not exists
+        if (!car) {
+            car = new Car(id, x, y)
+            this.cars.push(car)
+            this.scene.add(car.mesh)
+        }
+        // change car position
+        let car0 = cars0.find(obj => obj.id == id)
+        let car1 = cars1.find(obj => obj.id == id)
+
+        let diff_x = car1.x - car0.x
+        let diff_y = car1.y - car0.y
+
+        car.mesh.position.x = x + this.shift + (diff_x * (simElapsedTime%1))
+        car.mesh.position.y = this.height - y - (diff_y * (simElapsedTime%1))
+    }
+
+    updateCarRotation(cars0, cars1, id) {
+        let step0 = cars0.find(obj => obj.id == id)
+        let step1 = cars1.find(obj => obj.id == id)
+
+        let diff_x = step1.x - step0.x
+        let diff_y = step1.y - step0.y
+
+        if (diff_x < 0 && diff_y == 0) {
+            this.findCar(id).mesh.rotation.y = Math.PI * (3 / 2)
+        }
+        else if (diff_x > 0 && diff_y == 0) {
+            this.findCar(id).mesh.rotation.y = Math.PI * (1 / 2)
+        }
+        else if (diff_x == 0 && diff_y < 0) {
+            this.findCar(id).mesh.rotation.y = Math.PI * 0
+        }
+        else if (diff_x == 0 && diff_y > 0) {
+            this.findCar(id).mesh.rotation.y = Math.PI * 1
+        }
+    }
+
+    removeSingleCar(id) {
+        // remove mesh
+        let car = this.findCar(id)
+        this.scene.remove(car.mesh)
+        // remove car object from array
+        let index = this.cars.findIndex(obj => obj.id == id)
+        this.cars.splice(index, 1)
+    }
+    findCar(id) {
+        return this.cars.find(obj => obj.id == id)
+    }
+}
 
 const RECT_SIZE = 64
 const RECT_START = 0
@@ -73,4 +195,4 @@ function buildWorldMesh(map){
 }
 
 
-export { buildWorldMesh }
+export { buildWorldMesh, World}
