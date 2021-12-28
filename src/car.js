@@ -1,5 +1,12 @@
 import * as THREE from 'three'
 
+class Car {
+    constructor(id, x, y) {
+        this.id = id
+        this.mesh = buildCarMesh(x, y)
+    }
+}
+
 function buildCarMesh(x, y) {
     const colors = [0xff0000, 0x00ff00, 0x0000ff, 0xff00ff, 0xffff00, 0xffffff]
     let color_index = Math.floor(Math.random() * colors.length)
@@ -131,4 +138,4 @@ function getCarFrontLamps(txtColor_string) {
     return new THREE.CanvasTexture(canvas)
 }
 
-export { buildCarMesh }
+export { buildCarMesh , Car}

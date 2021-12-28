@@ -1,5 +1,28 @@
-import json from './after.json';
 import * as THREE from 'three';
+
+class Light {
+    constructor(id, height, shift){
+        this.id = id
+        let [y, x, side] = id.split('-')
+        this.mesh = buildLight()
+        this.mesh.position.x = parseFloat(x) + shift +.5
+        this.mesh.position.y = height - y -.5
+        this.mesh.position.z = 1.5
+
+        if (side == 'top') {
+            this.mesh.position.y += .5
+        }
+        if (side == 'bottom') {
+            this.mesh.position.y -= .5
+        }
+        if (side == 'left') {
+            this.mesh.position.x -= .5
+        }
+        if (side == 'right') {
+            this.mesh.position.x += .5
+        }
+    }
+}
 
 const BULB_SIZE = .16
 
@@ -24,4 +47,4 @@ function buildLight(){
     return light
 }
 
-export { buildLight }
+export { buildLight , Light}
