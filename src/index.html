@@ -9,21 +9,11 @@
 
 <body>
     <div id="container">
-        
-        <h1>INPUT VARIABLES</h1>
-        <!-- <a href="three" >THREE</a> -->
-        <button id="api-get">Show gallery</button>
-        <div id="gallery-container">
-            
-        </div>
 
-        <div id="weights">
-            <label for="weights">Arrange intensity:</label>
-            <select name="weights" id="weights">
-                <option value="1">balanced</option>
-                <option value="2">road with right of way</option>
-                <option value="3">road without right of way</option>
-            </select>
+        <h1>INPUT VARIABLES</h1>
+
+        <div id="gallery-container">
+
         </div>
 
         <div id="lights">
@@ -33,7 +23,7 @@
             max:
             <input type="number" name="" id="maxInitGreenlightLen" min="0" max="200" value="70">
         </div>
-        
+
         <div id="lights-bias">
             <label for="amber-lights">Init bias:</label>
             single light:
@@ -43,18 +33,32 @@
         </div>
 
         <div id="learning-proportions">
-            epochs number:
-            <input type="range" min="3" max="20" value="10" step="1" id="numEpochs">
-            worlds number:
-            <input type="range" min="3" max="20" value="10" step="1" id="numWorlds">
-            persisting worlds number:
-            <input type="range" min="1" max="20" value="4" step="1" id="numPersistingWorlds">
+            <div id="epochs">
+                epochs number:
+                <input type="range" min="3" max="20" value="10" step="1" id="numEpochs"
+                    oninput="this.nextElementSibling.value = this.value">
+                <output>10</output>
+            </div>
+
+            <div id="worlds">
+                worlds number:
+                <input type="range" min="3" max="20" value="10" step="1" id="numWorlds"
+                    oninput="this.nextElementSibling.value = this.value">
+                <output>10</output>
+            </div>
+
+            <div id="persisting-worlds">
+                persisting worlds number:
+                <input type="range" min="1" max="20" value="4" step="1" id="numPersistingWorlds"
+                    oninput="this.nextElementSibling.value = this.value">
+                <output>4</output>
+            </div>
 
         </div>
 
-        <button id="api-post">Confirm inputs</button>
+        <button id="api-post">Generate simulation</button>
 
-        
+
 
     </div>
 

@@ -138,4 +138,4 @@ function getCarFrontLamps(txtColor_string) {
     return new THREE.CanvasTexture(canvas)
 }
 
-export { buildCarMesh , Car}
+export default Car

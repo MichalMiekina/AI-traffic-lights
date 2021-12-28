@@ -12,9 +12,9 @@ module.exports = {
         }
     },
     entry:{
-        script: path.resolve(__dirname, '../src/script.js'),
-        home: path.resolve(__dirname, '../src/js/home.js'),
-        plots: path.resolve(__dirname, '../src/plots.js'),
+        animation: path.resolve(__dirname, '../src/js/animation.js'),
+        index: path.resolve(__dirname, '../src/js/index.js'),
+        plots: path.resolve(__dirname, '../src/js/plots.js'),
     },
     output:
     {
@@ -32,14 +32,14 @@ module.exports = {
             new HtmlWebpackPlugin({
                 template: path.resolve(__dirname, '../src/index.html'),
                 minify: true,
-                chunks: ['home']
+                chunks: ['index']
 
             }),
             new HtmlWebpackPlugin({
                 filename: 'three',
                 template: path.resolve(__dirname, '../src/three.html'),
                 minify: true,
-                chunks: ['script']
+                chunks: ['animation']
 
             }),
             new HtmlWebpackPlugin({

@@ -1,24 +1,21 @@
-import './css/three.css'
+import '../css/three.css'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-import { World } from './Terrain'
+import World from './Terrain'
 
 const scene = new THREE.Scene()
 const params = new URLSearchParams(document.location.search);
 const token = params.get("token");
 const worldName = params.get("world")
 
-
+const apiUrl = 'http://localhost:8080/api/'
 function getMap() {
-    let apiUrl = 'http://localhost:8080/api/'
-    return fetch(apiUrl + 'world/' + worldName)
+    return fetch(`${apiUrl}world/${worldName}`)
         .then(response => response.json())
 
 }
 function getPlot() {
-    let statusUrl = 'http://localhost:8080/api/status/'
-    console.log(token)
-    return fetch(statusUrl + token)
+    return fetch(`${apiUrl}status/${token}`)
         .then(response => response.json())
 }
 
@@ -57,10 +54,24 @@ function main(map, plot) {
     camera.rotation.y = Math.PI / 2
     camera.position.z = 20
 
+    window.addEventListener('resize', () => {
+        // Update sizes
+        sizes.width = window.innerWidth
+        sizes.height = window.innerHeight
+
+        // Update camera
+        camera.aspect = sizes.width / sizes.height
+        camera.updateProjectionMatrix()
+
+        // Update renderer
+        renderer.setSize(sizes.width, sizes.height)
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+    })
+
 
 
     const worldL = new World(scene, map_columns, map_rows, map, plot.before, 0)
-    const worldR = new World(scene, map_columns, map_rows, map, plot.after, map_columns+1)
+    const worldR = new World(scene, map_columns, map_rows, map, plot.after, map_columns + 1)
 
     buildTicks(scene, controls, renderer, camera, plot, worldL, worldR)
 }
@@ -121,8 +132,9 @@ function buildTicks(scene, controls, renderer, camera, plot, worldL, worldR) {
         document.getElementById("part_value").textContent = partPercentage
         document.getElementById("part_change_slider").value = (frame_index / steps_amount * 100).toFixed(1)
 
-        worldL.updateWorld(before.steps[frame_index], before.steps[frame_index + 1], simElapsedTime)
-        worldR.updateWorld(after.steps[frame_index], after.steps[frame_index + 1], simElapsedTime)
+        let previousStep = frame_index > 0 ? frame_index - 1 : 0
+        worldL.updateWorld(before.steps[previousStep], before.steps[frame_index], before.steps[frame_index + 1], simElapsedTime)
+        worldR.updateWorld(after.steps[previousStep], after.steps[frame_index], after.steps[frame_index + 1], simElapsedTime)
 
         controls.update()
         renderer.render(scene, camera)
@@ -131,19 +143,7 @@ function buildTicks(scene, controls, renderer, camera, plot, worldL, worldR) {
     tick()
 }
 
-window.addEventListener('resize', () => {
-    // Update sizes
-    sizes.width = window.innerWidth
-    sizes.height = window.innerHeight
 
-    // Update camera
-    camera.aspect = sizes.width / sizes.height
-    camera.updateProjectionMatrix()
-
-    // Update renderer
-    renderer.setSize(sizes.width, sizes.height)
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
-})
 
 getMapAndPlot()
-        .then(([map, plot]) => main(map, plot))
+    .then(([map, plot]) => main(map, plot))
