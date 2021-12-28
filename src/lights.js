@@ -17,7 +17,7 @@ function buildLight(){
     const light = new THREE.Group()
     const bulb = new THREE.Mesh(
         new THREE.SphereBufferGeometry(BULB_SIZE, BULB_SEGMENTS, BULB_SEGMENTS),
-        new THREE.MeshLambertMaterial({ color: BULB_INITIAL_COLOR })
+        new THREE.MeshPhongMaterial({ color: BULB_INITIAL_COLOR })
     )
     light.add(bulb)
 

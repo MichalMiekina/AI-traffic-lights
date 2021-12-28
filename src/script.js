@@ -10,7 +10,8 @@ const scene = new THREE.Scene()
 const params = new URLSearchParams(document.location.search);
 const token = params.get("token");
 const worldName = params.get("world")
-var simElapsedTime = 0
+
+
 
 class Car {
     constructor(id, x, y) {
@@ -174,6 +175,7 @@ function getMapAndPlot() {
 }
 
 function main(map, plot) {
+    console.log(map)
     console.log(plot)
     const map_rows = map.nodes.length
     const map_columns = map.nodes[0].length
@@ -205,7 +207,7 @@ function main(map, plot) {
     camera.position.z = 20
 
 
-    buildListeners()
+    
 
     const worldL = new World(map_columns, map_rows, map, plot.before, 0)
 
@@ -218,7 +220,7 @@ function main(map, plot) {
 
 function buildTicks(scene, controls, renderer, camera, plot, map_rows, map_columns, worldL, worldR) {
 
-
+    let simElapsedTime = 0
     const pointLight = new THREE.DirectionalLight(0xffffff, .9)
     pointLight.position.x = 2
     pointLight.position.y = 3
@@ -229,13 +231,12 @@ function buildTicks(scene, controls, renderer, camera, plot, map_rows, map_colum
     const clock = new THREE.Clock()
 
 
-    var time_speed = document.getElementById("s1").getElementsByTagName("input")[0].value
-    var prevElapsedTime = 0
-    var frame_index = 0
-    // var traffic_lights = buildLights(scene, map_columns)
-
+    let time_speed = document.getElementById("s1").getElementsByTagName("input")[0].value
+    let prevElapsedTime = 0
+    let frame_index = 0
 
     const steps_amount = plot.before.steps.length
+    buildListeners(simElapsedTime, steps_amount)
 
     const tick = () => {
         const { before, after } = plot
@@ -273,19 +274,11 @@ window.addEventListener('resize', () => {
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 })
 
-function buildListeners() {
-    console.log
+function buildListeners(simElapsedTime, steps_amount) {
     document.getElementById("part_change_slider").addEventListener(
         'input',
         function () {
             simElapsedTime = (document.getElementById("part_change_slider").value / 100) * steps_amount
-        }
-    )
-
-    document.getElementById("default_part_button").addEventListener(
-        'click',
-        function () {
-            // TODO nice to have
         }
     )
 
@@ -305,32 +298,5 @@ function buildListeners() {
     )
 }
 
-document.getElementById("dev-button").addEventListener(
-    'click',
-    function () {
-        camera.position.x = 2
-        camera.position.y = 2
-        camera.position.z = 2
-        scene.add(new THREE.GridHelper(10, 10));
-
-        // Objects
-
-        scene.add(test_object1)
-        test_object1.position.x = 0
-        test_object1.rotation.x = Math.PI * 2
-        console.log(test_object1.position.x, test_object1.position.y, test_object1.position.z)
-    }
-)
-document.getElementById("uat-button").addEventListener(
-    'click',
-    getMapAndPlot()
+getMapAndPlot()
         .then(([map, plot]) => main(map, plot))
-
-)
-
-document.getElementById("prod-button").addEventListener(
-    'click',
-    function () {
-        console.log('DEV')
-    }
-)

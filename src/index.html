@@ -29,26 +29,26 @@
         <div id="lights">
             <label for="green-lights">Init green light lenght:</label>
             min:
-            <input type="number" name="" id="minInitGreenlightLen" min="0" max="1000" value="10">
+            <input type="number" name="" id="minInitGreenlightLen" min="0" max="100" value="40">
             max:
-            <input type="number" name="" id="maxInitGreenlightLen" min="0" max="1000" value="20">
+            <input type="number" name="" id="maxInitGreenlightLen" min="0" max="200" value="70">
         </div>
         
         <div id="lights-bias">
             <label for="amber-lights">Init bias:</label>
             single light:
-            <input type="number" name="" id="singleLightBias" min="0" max="1000" value="10">
+            <input type="number" name="" id="singleLightBias" min="1" max="20" value="5">
             all lights:
-            <input type="number" name="" id="allLightsBias" min="0" max="1000" value="10">
+            <input type="number" name="" id="allLightsBias" min="1" max="20" value="5">
         </div>
 
         <div id="learning-proportions">
             epochs number:
-            <input type="range" min="1" max="100" value="2" step="1" id="numEpochs">
+            <input type="range" min="3" max="20" value="10" step="1" id="numEpochs">
             worlds number:
-            <input type="range" min="1" max="100" value="10" step="1" id="numWorlds">
+            <input type="range" min="3" max="20" value="10" step="1" id="numWorlds">
             persisting worlds number:
-            <input type="range" min="1" max="100" value="5" step="1" id="numPersistingWorlds">
+            <input type="range" min="1" max="20" value="4" step="1" id="numPersistingWorlds">
 
         </div>
 
