@@ -1,5 +1,13 @@
 import * as THREE from 'three';
 
+
+const BULB_SIZE = .16
+
+const BULB_SEGMENTS = 16
+
+const BULB_INITIAL_COLOR = 0xff0000
+
+
 class Light {
     constructor(id, height, shift){
         this.id = id
@@ -24,18 +32,6 @@ class Light {
     }
 }
 
-const BULB_SIZE = .16
-
-const BULB_SEGMENTS = 16
-
-const BULB_INITIAL_COLOR = 0xff0000
-
-const HALF = .5
-
-const BULB_HEIGHT = 1.5
-
-
-
 function buildLight(){
     const light = new THREE.Group()
     const bulb = new THREE.Mesh(
@@ -47,4 +43,4 @@ function buildLight(){
     return light
 }
 
-export { buildLight , Light}
+export default Light

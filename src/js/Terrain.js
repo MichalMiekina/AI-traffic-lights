@@ -1,6 +1,22 @@
 import * as THREE from 'three';
-import {Light} from './lights'
-import {Car} from './Car'
+import Light from './lights'
+import Car from './Car'
+
+const RECT_SIZE = 64
+const RECT_START = 0
+const INNER_RECT_START = 1
+
+const INNER_RECT_SIZE = 62
+
+const STREET_COLOR = '#333'
+const FRAME_COLOR = '#FFF'
+
+const GRASS_COLOR = '#0a0'
+
+
+const streetTexture = createStreet()
+const grassTexture = createGrass()
+
 
 class World {
     constructor(scene, width, height, map, course, shift) {
@@ -10,42 +26,42 @@ class World {
         this.height = height
         this.cars = []
         this.lights = []
-        for(let i=0;i<course.steps[0].lights.length;i++){
+        for (let i = 0; i < course.steps[0].lights.length; i++) {
             let id = course.steps[0].lights[i].id
-            
+
             let light = new Light(id, height, this.shift)
             this.lights.push(light)
             this.scene.add(light.mesh)
         }
-        
+
         this.map = buildWorldMesh(map)
         this.map.position.x += shift
         this.scene.add(this.map)
     }
-    updateWorld(step0, step1, simElapsedTime) {
-        this.updateCars(step0.cars, step1.cars, simElapsedTime)
+    updateWorld(prevStep, step0, step1, simElapsedTime) {
+        this.updateCars(prevStep.cars, step0.cars, step1.cars, simElapsedTime)
         this.updateLights(step0.lights)
 
     }
-    updateLights(lights){
-        for(let i=0;i<this.lights.length;i++){
+    updateLights(lights) {
+        for (let i = 0; i < this.lights.length; i++) {
             this.updateLightColor(lights, this.lights[i])
         }
     }
-    updateLightColor(lights, {id, mesh}){
-        let {color} = lights.find(obj => obj.id == id)
-        if(color == 'red'){
-            mesh.children[0].material.color = {r:1, g:0, b: 0}
+    updateLightColor(lights, { id, mesh }) {
+        let { color } = lights.find(obj => obj.id == id)
+        if (color == 'red') {
+            mesh.children[0].material.color = { r: 1, g: 0, b: 0 }
         }
-        if(color == 'green'){
-            mesh.children[0].material.color = {r:0, g:1, b: 0}
+        else if (color == 'green') {
+            mesh.children[0].material.color = { r: 0, g: 1, b: 0 }
         }
-        if(color == 'amber'){
-            mesh.children[0].material.color = {r:1, g:1, b: 0}
+        else if (color == 'amber') {
+            mesh.children[0].material.color = { r: 1, g: 1, b: 0 }
         }
-        
+
     }
-    updateCars(cars0, cars1, simElapsedTime) {
+    updateCars(prevCars, cars0, cars1, simElapsedTime) {
         // removing cars that left the world
         let existingCarsID = cars0.map(a => a.id)
         for (let i = 0; i < this.cars.length; i++) {
@@ -56,37 +72,48 @@ class World {
 
         // creating and moving cars
         for (let i = 0; i < cars0.length; i++) {
-            if (cars0.map(a => a.id).includes(cars0[i].id) && cars1.map(a => a.id).includes(cars0[i].id)) {
-                this.updateCarPosition(cars0, cars1, cars0[i], simElapsedTime)
-            }
-            
+            this.updateCarPosition(prevCars, cars0, cars1, cars0[i], simElapsedTime)
         }
 
         for (let i = 0; i < this.cars.length; i++) {
             if (cars0.map(a => a.id).includes(this.cars[i].id) && cars1.map(a => a.id).includes(this.cars[i].id)) {
                 this.updateCarRotation(cars0, cars1, this.cars[i].id)
             }
-
         }
     }
 
-    updateCarPosition(cars0, cars1, { id, x, y }, simElapsedTime) {
+    updateCarPosition(prevCars, cars0, cars1, { id, x, y }, simElapsedTime) {
         let car = this.findCar(id)
-        // create car if not exists
-        if (!car) {
-            car = new Car(id, x, y)
-            this.cars.push(car)
-            this.scene.add(car.mesh)
+        const frameIndexRest = simElapsedTime % 1
+        if (cars1.map(a => a.id).includes(id)) {
+            // create car if not exists
+            if (!car) {
+                car = new Car(id, x, y)
+                this.cars.push(car)
+                this.scene.add(car.mesh)
+            }
+            // change car position
+            let car0 = cars0.find(obj => obj.id == id)
+            let car1 = cars1.find(obj => obj.id == id)
+
+            let diff_x = car1.x - car0.x
+            let diff_y = car1.y - car0.y
+
+            car.mesh.position.x = x + this.shift + diff_x * frameIndexRest
+            car.mesh.position.y = this.height - y - diff_y * frameIndexRest
         }
-        // change car position
-        let car0 = cars0.find(obj => obj.id == id)
-        let car1 = cars1.find(obj => obj.id == id)
+        else{
+            let prevCar = prevCars.find(obj => obj.id == id)
+            let car0 = cars0.find(obj => obj.id == id)
 
-        let diff_x = car1.x - car0.x
-        let diff_y = car1.y - car0.y
+            let diff_x = car0.x - prevCar.x
+            let diff_y = car0.y - prevCar.y
 
-        car.mesh.position.x = x + this.shift + (diff_x * (simElapsedTime%1))
-        car.mesh.position.y = this.height - y - (diff_y * (simElapsedTime%1))
+            car.mesh.position.x = x + this.shift + diff_x * frameIndexRest
+            car.mesh.position.y = this.height - y - diff_y * frameIndexRest
+        }
+
+
     }
 
     updateCarRotation(cars0, cars1, id) {
@@ -123,30 +150,17 @@ class World {
     }
 }
 
-const RECT_SIZE = 64
-const RECT_START = 0
-const INNER_RECT_START = 1
 
-const INNER_RECT_SIZE = 62
-
-const STREET_COLOR = '#333'
-const FRAME_COLOR = '#FFF'
-
-const GRASS_COLOR = '#0a0'
-
-
-const streetTexture = createStreet()
-const grassTexture = createGrass()
 
 function createContext() {
     const canvas = document.createElement("canvas")
     canvas.width = RECT_SIZE
     canvas.height = RECT_SIZE
-    return {canvas: canvas, context: canvas.getContext('2d')}
+    return { canvas: canvas, context: canvas.getContext('2d') }
 }
 
 function createStreet() {
-    const {canvas, context} = createContext()
+    const { canvas, context } = createContext()
 
     context.fillStyle = FRAME_COLOR
     context.fillRect(RECT_START, RECT_START, RECT_SIZE, RECT_SIZE)
@@ -158,7 +172,7 @@ function createStreet() {
 }
 
 function createGrass() {
-    const {canvas, context} = createContext()
+    const { canvas, context } = createContext()
 
     context.fillStyle = FRAME_COLOR
     context.fillRect(RECT_START, RECT_START, RECT_SIZE, RECT_SIZE)
@@ -170,12 +184,12 @@ function createGrass() {
 }
 
 
-function buildWorldMesh(map){
+function buildWorldMesh(map) {
     const world = new THREE.Group()
     const nodesMeshesList = []
     for (let i = 0; i < map.nodes.length; i++) {
         for (let j = 0; j < map.nodes[i].length; j++) {
-            let texture = map.nodes[i][j].type == 'grass' ? grassTexture : streetTexture 
+            let texture = map.nodes[i][j].type == 'grass' ? grassTexture : streetTexture
 
             let material = new THREE.MeshLambertMaterial({ map: texture })
 
@@ -193,6 +207,5 @@ function buildWorldMesh(map){
     }
     return world
 }
-
-
-export { buildWorldMesh, World}
+export { buildWorldMesh }
+export default World

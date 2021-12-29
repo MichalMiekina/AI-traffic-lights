@@ -1,7 +1,7 @@
 import '../css/index.css'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-import { buildWorldMesh } from '../Terrain'
+import { buildWorldMesh } from './Terrain'
 import * as dat from 'dat.gui'
 
 
@@ -102,14 +102,6 @@ const tick = () => {
 const apiUrl = 'http://localhost:8080/api/'
 
 var token = ''
-document.getElementById("api-get").addEventListener(
-    'click',
-    function () {
-        fetch(apiUrl + "list-worlds")
-            .then(response => response.json())
-            .then(data => drawMaps(data))
-    }
-)
 
 document.getElementById("api-post").addEventListener(
     'click',
@@ -127,3 +119,7 @@ document.getElementById("api-post").addEventListener(
             .then(token => window.location.href = 'http://localhost:8080/plots?token=' + token+'&world='+input.worldName)
     }
 )
+
+fetch(apiUrl + "list-worlds")
+            .then(response => response.json())
+            .then(data => drawMaps(data))
