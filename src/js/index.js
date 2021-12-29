@@ -122,11 +122,14 @@ document.getElementById("api-post").addEventListener(
 )
 const spawnRateOnesSlider = document.getElementById('spawnRateOnesSlider')
 const spawnRateFractionsSlider = document.getElementById('spawnRateFractionsSlider')
+const numWorldsSlider = document.getElementById('numWorlds')
+const numPersistingWorldsSlider = document.getElementById('numPersistingWorlds')
 
 const ones = document.getElementById('ones')
 const fractions = document.getElementById('fractions')
 
 updateSpawnRate()
+updateNumPersistingWorlds()
 
 function updateSpawnRate() {
     ones.getElementsByTagName('output')[0].textContent = spawnRateOnesSlider.value
@@ -134,8 +137,18 @@ function updateSpawnRate() {
     document.getElementById('spawn-rate-sum').textContent = parseFloat(spawnRateOnesSlider.value) + parseFloat(spawnRateFractionsSlider.value)
 }
 
+function updateNumPersistingWorlds(){
+    
+    numPersistingWorldsSlider.max = Math.floor(numWorldsSlider.value/2)
+    console.log(numPersistingWorldsSlider.max, Math.floor(numWorldsSlider.value))
+    if(parseFloat(numPersistingWorldsSlider.value)  > parseFloat(numPersistingWorldsSlider.max) ){
+        console.log(numPersistingWorldsSlider.value, numPersistingWorldsSlider.max, numPersistingWorldsSlider.value + numPersistingWorldsSlider.max)
+    }
+}
+
 spawnRateOnesSlider.addEventListener('input',updateSpawnRate)
 spawnRateFractionsSlider.addEventListener('input',updateSpawnRate)
+numWorldsSlider.addEventListener('input', updateNumPersistingWorlds)
 
 fetch(apiUrl + "list-worlds")
     .then(response => response.json())
