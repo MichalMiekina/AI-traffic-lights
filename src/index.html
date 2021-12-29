@@ -12,27 +12,43 @@
 
         <h1>INPUT VARIABLES</h1>
 
-        <div id="gallery-container">
+        <div id="gallery-container" class="vars-category">
 
         </div>
 
         <div id="lights">
-            <label for="green-lights">Init green light lenght:</label>
-            min:
-            <input type="number" name="" id="minInitGreenlightLen" min="0" max="100" value="40">
-            max:
-            <input type="number" name="" id="maxInitGreenlightLen" min="0" max="200" value="70">
+
+            <div id="lights-starting" class="vars-category">
+                <label for="green-lights">Init green light lenght:</label>
+                <div>
+                    min:
+                    <input type="number" name="" id="minInitGreenlightLen" min="0" max="100" value="40">
+                </div>
+                <div>
+                    max:
+                    <input type="number" name="" id="maxInitGreenlightLen" min="0" max="200" value="70">
+                </div>
+
+            </div>
+
+            <div id="lights-bias"  class="vars-category">
+                <label for="amber-lights">Init bias:</label>
+                <div>
+                    single light:
+                    <input type="number" name="" id="singleLightBias" min="1" max="20" value="5">
+                </div>
+                <div>
+                    all lights:
+                    <input type="number" name="" id="allLightsBias" min="1" max="20" value="5">
+                </div>
+
+            </div>
         </div>
 
-        <div id="lights-bias">
-            <label for="amber-lights">Init bias:</label>
-            single light:
-            <input type="number" name="" id="singleLightBias" min="1" max="20" value="5">
-            all lights:
-            <input type="number" name="" id="allLightsBias" min="1" max="20" value="5">
-        </div>
 
-        <div id="learning-proportions">
+
+        <div id="learning-proportions" class="vars-category">
+            <label for="learning-proportions">learning-proportions</label>
             <div id="epochs">
                 epochs number:
                 <input type="range" min="3" max="20" value="10" step="1" id="numEpochs"
@@ -54,7 +70,26 @@
                 <output>4</output>
             </div>
 
+            
+
         </div>
+        <div id="spawn-rate" class="vars-category">
+            <label for="spawn-rate">
+                spawn-rate:
+                <span id="spawn-rate-sum">0</span>
+            </label>
+            <div id="ones">
+                <input type="range" min="1" max="30" value="4" step=".1" id="spawnRateOnesSlider">
+                <output>4</output>
+            </div>
+            <div id="fractions">
+                <input type="range" min="0" max="1" value="0.25" step="0.05" id="spawnRateFractionsSlider">
+                <output>0.25</output>
+            </div>
+
+
+        </div>
+
 
         <button id="api-post">Generate simulation</button>
 

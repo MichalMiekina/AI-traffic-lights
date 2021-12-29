@@ -2,3 +2,38 @@
 .selected-map{
     border-radius: 25%;
 }
+
+.vars-category{
+    box-shadow: 1px 2px rgb(255 0 0 / 0.2);
+    background-color:#ffe4c4;
+    border: 1px solid;
+    border-color: coral;
+    border-radius: 8px;
+    margin: 1% 2% 1% 2%;
+    padding: 1%;
+}
+
+.vars-category *{
+    margin: 2px;
+}
+
+.vars-category label{
+    margin-left: 1%;
+    font-weight: bold;
+}
+
+button{
+    left: 50%;
+    position: absolute;
+}
+
+#gallery-container{
+    display: flex;
+    justify-content: space-around;
+}
+
+#gallery-container canvas{
+    display: block;
+    width: 80%;
+    height: 100%;
+}

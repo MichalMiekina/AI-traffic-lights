@@ -18,20 +18,21 @@ function buildInput() {
         "numWorlds": Number(document.getElementById('numWorlds').value),
         "numPersistingWorlds": Number(document.getElementById('numPersistingWorlds').value),
         "numEpochs": Number(document.getElementById('numEpochs').value)
-        
+
     }
 
     return input
 }
 
 
-function drawSingleMap(map, mapNumber) {
+function drawSingleMap(map) {
     const pointLight = new THREE.DirectionalLight(0xffffff, .9)
     pointLight.position.x = 2
     pointLight.position.y = 3
     pointLight.position.z = 4
     scene.add(pointLight)
-    scene.background = new THREE.Color(0xaaaaaa)
+    // scene.background = new THREE.Color(0xaaaaaa)
+    scene.background = new THREE.Color(0xffe4c4)
 
     scene.add(buildWorldMesh(map))
     controls.target = new THREE.Vector3(map.nodes.length / 2, map.nodes[0].length / 2, 0);
@@ -89,7 +90,7 @@ const renderer = new THREE.WebGLRenderer({
     canvas: canvas,
     preserveDrawingBuffer: true
 })
-renderer.setSize(sizes.width / 4, sizes.height / 4)
+renderer.setSize(sizes.width / 3.5, sizes.height / 3.5)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
 
@@ -116,10 +117,26 @@ document.getElementById("api-post").addEventListener(
         })
             .then(response => response.json())
             .then(data => token = data.token)
-            .then(token => window.location.href = 'http://localhost:8080/plots?token=' + token+'&world='+input.worldName)
+            .then(token => window.location.href = 'http://localhost:8080/plots?token=' + token + '&world=' + input.worldName)
     }
 )
+const spawnRateOnesSlider = document.getElementById('spawnRateOnesSlider')
+const spawnRateFractionsSlider = document.getElementById('spawnRateFractionsSlider')
+
+const ones = document.getElementById('ones')
+const fractions = document.getElementById('fractions')
+
+updateSpawnRate()
+
+function updateSpawnRate() {
+    ones.getElementsByTagName('output')[0].textContent = spawnRateOnesSlider.value
+    fractions.getElementsByTagName('output')[0].textContent = spawnRateFractionsSlider.value
+    document.getElementById('spawn-rate-sum').textContent = parseFloat(spawnRateOnesSlider.value) + parseFloat(spawnRateFractionsSlider.value)
+}
+
+spawnRateOnesSlider.addEventListener('input',updateSpawnRate)
+spawnRateFractionsSlider.addEventListener('input',updateSpawnRate)
 
 fetch(apiUrl + "list-worlds")
-            .then(response => response.json())
-            .then(data => drawMaps(data))
+    .then(response => response.json())
+    .then(data => drawMaps(data))
