@@ -34,13 +34,24 @@ function plot(plot){
         smoothing: "1.3"
         }
     };
+
+
+    var c = {
+        y: [plot.at(0),plot.at(-1)],
+        x: [0, plot.length -1],
+        mode: 'scatter',
+        name: "overall tendency",
+        }
     
-    var plotData = [a,b];
+    var plotData = [a,b,c];
     
+    let delta = ((plot.at(0)-plot.at(-1))*100).toFixed(1)
+
     var layout = {
-        title: 'Learning Curve',
+        title: 'Learning Curve ( ' + delta + "% )",
         yaxis: {range: [0, UPPER_PLOT_RANGE]},
-        yaxis2: { range: [0, UPPER_PLOT_RANGE]}
+        yaxis2: { range: [0, UPPER_PLOT_RANGE]},
+        yaxis3: { range: [0, UPPER_PLOT_RANGE]}
     };
 
     Plotly.newPlot('plot', plotData, layout);
