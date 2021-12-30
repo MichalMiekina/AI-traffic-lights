@@ -3,15 +3,18 @@ body{
 
 }
 
+h1{
+    text-align: center;
+}
 
 .selected-map{
-    border-radius: 16%;
-    border: 4px solid black;
+    border-radius: 8%;
+    border: 4px solid white;
 }
 
 .vars-category{
     box-shadow: 1px 2px rgb(255 0 0 / 0.2);
-    background-color:#ffe4c4bb;
+    background-color:#ffe4c4c0;
     /* background-color: rgba(255, 0, 0, 1); */
     border: 1px solid;
     border-color: coral;
@@ -29,9 +32,8 @@ body{
     font-weight: bold;
 }
 
-button{
-    left: 50%;
-    position: absolute;
+#button{
+    text-align: center;
 }
 
 #gallery-container{
@@ -39,8 +41,8 @@ button{
     justify-content: space-around;
 }
 
-#gallery-container canvas{
+#gallery-container img{
     display: block;
-    width: 80%;
+    width: 20%;
     height: 100%;
 }

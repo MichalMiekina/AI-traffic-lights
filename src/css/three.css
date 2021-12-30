@@ -4,8 +4,14 @@
     padding: 0;
 }
 
-a{
+#homeButton{
     color: white;
+    text-decoration: none;
+    font-size: 300%;
+}
+
+#homeButton:hover{
+    color: cornflowerblue;
 }
 
 html,
@@ -31,37 +37,12 @@ body {
 }
 
 #container {
+    display: flex;
+    justify-content: space-around;
     z-index: 10;
     margin-left: 2%;
-    margin-top: 100px;
+    padding-top: 8%;
     color: white;
-    justify-content: space-between;
-    width: 60%;
-}
-
-#s0 {
-    z-index: 10;
-    margin-top: 100px;
-    color: white;
-    justify-content: space-between;
-    width: 60%;
-}
-
-#s1 {
-    z-index: 10;
-    margin-top: 100px;
-    color: white;
-    justify-content: space-between;
-    width: 60%;
-}
-
-
-#s2 {
-    z-index: 10;
-    margin-top: 100px;
-    color: white;
-    justify-content: space-between;
-    width: 60%;
-    /* display: flex; */
+    width: 100%;
     
 }

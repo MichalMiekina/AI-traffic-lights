@@ -42,17 +42,15 @@ function main(map, plot) {
     renderer.setSize(sizes.width, sizes.height)
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
     scene.add(camera)
-    camera.position.x = 2
-    camera.position.y = 6
-    camera.position.z = 2
     // Controls
     const controls = new OrbitControls(camera, canvas)
     controls.enableDamping = true
+    controls.enabled = false
     controls.target = new THREE.Vector3(map_columns, map_rows / 2, 0);
     camera.position.x = map_columns
     camera.position.y = map_rows / 2
     camera.rotation.y = Math.PI / 2
-    camera.position.z = 20
+    camera.position.z = map_columns
 
     window.addEventListener('resize', () => {
         // Update sizes
@@ -78,13 +76,13 @@ function main(map, plot) {
 
 
 
-function buildTicks(scene, controls, renderer, camera, plot, worldL, worldR) {
+function buildTicks(scene, controls, renderer, camera, plot, worldL, worldR, map_columns, map_rows) {
 
     var simElapsedTime = 0
-    const pointLight = new THREE.DirectionalLight(0xffffff, .9)
-    pointLight.position.x = 2
-    pointLight.position.y = 3
-    pointLight.position.z = 4
+    const pointLight = new THREE.DirectionalLight(0xffffff, .8)
+    pointLight.position.x = 0
+    pointLight.position.y = 0
+    pointLight.position.z = 10
     scene.add(pointLight)
     scene.background = new THREE.Color(0x444444)
 
