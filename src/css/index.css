@@ -1,3 +1,8 @@
+body{
+    background-image: url("../img/traffic.jpg");
+
+}
+
 
 .selected-map{
     border-radius: 16%;
@@ -6,7 +11,8 @@
 
 .vars-category{
     box-shadow: 1px 2px rgb(255 0 0 / 0.2);
-    background-color:#ffe4c4;
+    background-color:#ffe4c4bb;
+    /* background-color: rgba(255, 0, 0, 1); */
     border: 1px solid;
     border-color: coral;
     border-radius: 8px;

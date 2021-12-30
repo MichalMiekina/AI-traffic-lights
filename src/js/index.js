@@ -17,8 +17,8 @@ function buildInput() {
         "allLightsBias": Number(document.getElementById('allLightsBias').value),
         "numWorlds": Number(document.getElementById('numWorlds').value),
         "numPersistingWorlds": Number(document.getElementById('numPersistingWorlds').value),
-        "numEpochs": Number(document.getElementById('numEpochs').value)
-
+        "numEpochs": Number(document.getElementById('numEpochs').value),
+        "spawnRate": Number(document.getElementById('spawn-rate-sum').value)
     }
 
     return input
@@ -32,7 +32,7 @@ function drawSingleMap(map) {
     pointLight.position.z = 4
     scene.add(pointLight)
     // scene.background = new THREE.Color(0xaaaaaa)
-    scene.background = new THREE.Color(0xffe4c4)
+    // scene.background = new THREE.Color(0xffe4c4)
 
     scene.add(buildWorldMesh(map))
     controls.target = new THREE.Vector3(map.nodes.length / 2, map.nodes[0].length / 2, 0);
@@ -52,7 +52,7 @@ function drawMaps(data) {
         drawSingleMap(data.worlds[i], i)
 
         var img = document.createElement('img')
-        img.src = renderer.domElement.toDataURL("image/jpeg");
+        img.src = renderer.domElement.toDataURL("image/png");
         img.id = data.worlds[i].name
         img.className = 'world-map'
         document.getElementById('gallery-container').appendChild(img)
@@ -88,8 +88,10 @@ controls.enableDamping = true
 
 const renderer = new THREE.WebGLRenderer({
     canvas: canvas,
-    preserveDrawingBuffer: true
+    preserveDrawingBuffer: true,
+    alpha: true
 })
+renderer.setClearColor(0xffffff, 0)
 renderer.setSize(sizes.width / 3.5, sizes.height / 3.5)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
@@ -137,13 +139,10 @@ function updateSpawnRate() {
     document.getElementById('spawn-rate-sum').textContent = parseFloat(spawnRateOnesSlider.value) + parseFloat(spawnRateFractionsSlider.value)
 }
 
+
 function updateNumPersistingWorlds(){
-    
     numPersistingWorldsSlider.max = Math.floor(numWorldsSlider.value/2)
-    console.log(numPersistingWorldsSlider.max, Math.floor(numWorldsSlider.value))
-    if(parseFloat(numPersistingWorldsSlider.value)  > parseFloat(numPersistingWorldsSlider.max) ){
-        console.log(numPersistingWorldsSlider.value, numPersistingWorldsSlider.max, numPersistingWorldsSlider.value + numPersistingWorldsSlider.max)
-    }
+    document.getElementById('persisting-worlds').getElementsByTagName('output')[0].textContent = numPersistingWorldsSlider.value
 }
 
 spawnRateOnesSlider.addEventListener('input',updateSpawnRate)
