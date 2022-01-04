@@ -5,14 +5,10 @@
 }
 
 #homeButton{
-    color: white;
     text-decoration: none;
-    font-size: 300%;
+    font-size: 200%;
 }
 
-#homeButton:hover{
-    color: #1e90ff;
-}
 
 html,
 body

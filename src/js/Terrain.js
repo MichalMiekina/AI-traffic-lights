@@ -109,8 +109,11 @@ class World {
             let diff_x = car0.x - prevCar.x
             let diff_y = car0.y - prevCar.y
 
-            car.mesh.position.x = x + this.shift + diff_x * frameIndexRest
-            car.mesh.position.y = this.height - y - diff_y * frameIndexRest
+            if(car){
+
+                car.mesh.position.x = x + this.shift + diff_x * frameIndexRest
+                car.mesh.position.y = this.height - y - diff_y * frameIndexRest
+            }
         }
 
 

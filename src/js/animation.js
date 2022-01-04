@@ -131,8 +131,16 @@ function buildTicks(scene, controls, renderer, camera, plot, worldL, worldR, map
         document.getElementById("part_change_slider").value = (frame_index / steps_amount * 100).toFixed(1)
 
         let previousStep = frame_index > 0 ? frame_index - 1 : 0
-        worldL.updateWorld(before.steps[previousStep], before.steps[frame_index], before.steps[frame_index + 1], simElapsedTime)
-        worldR.updateWorld(after.steps[previousStep], after.steps[frame_index], after.steps[frame_index + 1], simElapsedTime)
+        if(frame_index<steps_amount){
+            worldL.updateWorld(before.steps[previousStep], before.steps[frame_index], before.steps[frame_index + 1], simElapsedTime)
+            worldR.updateWorld(after.steps[previousStep], after.steps[frame_index], after.steps[frame_index + 1], simElapsedTime)
+        }
+        else{
+            document.getElementById("s1").getElementsByTagName("input")[0].value = 0
+            document.getElementById("part_value").textContent = 100
+            document.getElementById("speed_value").textContent = document.getElementById("speed_change_slider").value
+        }
+        
 
         controls.update()
         renderer.render(scene, camera)

@@ -68,6 +68,7 @@ function handleStatusUpdate(response) {
         plot(response.plot)
         plotDiv.textContent = 'Sesja zakończona'
         document.getElementById('animate').style.display = 'block'
+        document.getElementById('header').style.display = 'none'
     } else {
         plotDiv.textContent = 'Oczekiwanie na wyniki pierwszej epoki...'
         session(token)
