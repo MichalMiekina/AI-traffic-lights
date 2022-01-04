@@ -87,6 +87,7 @@ document.getElementById("api-post").addEventListener(
 
 function drawMaps(data) {
     for (let i = 0; i < data.worlds.length; i++) {
+        // removing previous map before building new one
         while (scene.children.length > 0) {
             scene.remove(scene.children[0]);
         }
@@ -131,6 +132,7 @@ function buildInput() {
 
 
 function drawSingleMap(map) {
+    console.log(map)
     const sideSize = map.nodes.length
     const pointLight = new THREE.DirectionalLight(0xffffff, .9)
     pointLight.position.x = 2

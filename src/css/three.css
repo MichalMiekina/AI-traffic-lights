@@ -11,7 +11,7 @@
 }
 
 #homeButton:hover{
-    color: cornflowerblue;
+    color: #1e90ff;
 }
 
 html,
@@ -41,8 +41,32 @@ body {
     justify-content: space-around;
     z-index: 10;
     margin-left: 2%;
-    padding-top: 8%;
+    padding-top: 6%;
     color: white;
     width: 100%;
     
+}
+
+button {
+    background-color: white; 
+    color: black; 
+    border: 2px solid #1e90ff;
+    border-radius: 8px;
+    padding: 4px 8px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 12px;
+    margin: 4px 2px;
+    transition-duration: 0.4s;
+    cursor: pointer;
+}
+
+button:hover {
+background-color: #1e90ff;
+color: white;
+}
+
+#s0, #s1{
+    text-align: center;
 }

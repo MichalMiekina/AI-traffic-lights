@@ -102,7 +102,7 @@ class World {
             car.mesh.position.x = x + this.shift + diff_x * frameIndexRest
             car.mesh.position.y = this.height - y - diff_y * frameIndexRest
         }
-        else{
+        else {
             let prevCar = prevCars.find(obj => obj.id == id)
             let car0 = cars0.find(obj => obj.id == id)
 
@@ -159,14 +159,31 @@ function createContext() {
     return { canvas: canvas, context: canvas.getContext('2d') }
 }
 
-function createStreet() {
+function createStreet(weight, type) {
+
     const { canvas, context } = createContext()
 
     context.fillStyle = FRAME_COLOR
     context.fillRect(RECT_START, RECT_START, RECT_SIZE, RECT_SIZE)
+    
+    if(['exit','entry'].includes(type)){
+        context.fillStyle = type == 'exit' ? '#990000' : '#000099'
+        context.fillRect(INNER_RECT_START, INNER_RECT_START, INNER_RECT_SIZE, INNER_RECT_SIZE)
+    }
+    else{
+        context.fillStyle = STREET_COLOR
+        context.fillRect(INNER_RECT_START, INNER_RECT_START, INNER_RECT_SIZE, INNER_RECT_SIZE)
+    }
 
-    context.fillStyle = STREET_COLOR
-    context.fillRect(INNER_RECT_START, INNER_RECT_START, INNER_RECT_SIZE, INNER_RECT_SIZE)
+    if (weight) {
+        context.fillStyle = 'white'
+        context.font = '60px MonoLisa';
+        context.textAlign = 'center'
+        context.textBaseline = 'middle';
+        context.fillText(weight, RECT_SIZE / 2, RECT_SIZE / 2);
+    }
+
+    
 
     return new THREE.CanvasTexture(canvas)
 }
@@ -189,7 +206,7 @@ function buildWorldMesh(map) {
     const nodesMeshesList = []
     for (let i = 0; i < map.nodes.length; i++) {
         for (let j = 0; j < map.nodes[i].length; j++) {
-            let texture = map.nodes[i][j].type == 'grass' ? grassTexture : streetTexture
+            let texture = map.nodes[i][j].type == 'grass' ? grassTexture : createStreet(map.nodes[i][j].weight, map.nodes[i][j].type)
 
             let material = new THREE.MeshLambertMaterial({ map: texture })
 

@@ -84,7 +84,7 @@ function buildTicks(scene, controls, renderer, camera, plot, worldL, worldR, map
     pointLight.position.y = 0
     pointLight.position.z = 10
     scene.add(pointLight)
-    scene.background = new THREE.Color(0x444444)
+    scene.background = new THREE.Color(0x555555)
 
     const clock = new THREE.Clock()
 
