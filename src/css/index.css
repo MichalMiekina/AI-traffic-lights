@@ -1,6 +1,9 @@
 body{
     background-image: url("../img/traffic.jpg");
-
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
 }
 
 h1{
@@ -32,8 +35,27 @@ h1{
     font-weight: bold;
 }
 
+
+#slider-range {
+    height: 15px;
+    width: 300px !important;
+    border-width: 3px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+
+
 #button{
     text-align: center;
+
+}
+
+#api-post{
+    text-align: center;
+    font-size: 30px;;
+    border-radius: 8px;
+    border: 1px solid coral;
+    background-color:#ffe4c4;
 }
 
 #gallery-container{
@@ -46,3 +68,22 @@ h1{
     width: 20%;
     height: 100%;
 }
+
+
+.ui-widget-header {
+	border: 1px solid dodgerblue !important;
+	background: dodgerblue !important;
+	color: red !important;
+	font-weight: bold;
+    margin-top: -0.8px;
+}
+
+.ui-widget-content {
+    border-radius: 10px;
+	border: 1px solid red;
+	background: #EFEFEF;
+	color: red;
+    height: 5px;
+    padding-top: px;
+}
+

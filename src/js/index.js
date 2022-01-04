@@ -55,8 +55,6 @@ updateNumPersistingWorlds()
 
 function updateSpawnRate() {
     ones.getElementsByTagName('output')[0].textContent = spawnRateOnesSlider.value
-    fractions.getElementsByTagName('output')[0].textContent = spawnRateFractionsSlider.value
-    document.getElementById('spawn-rate-sum').textContent = parseFloat(spawnRateOnesSlider.value) + parseFloat(spawnRateFractionsSlider.value)
 }
 
 
@@ -66,7 +64,7 @@ function updateNumPersistingWorlds(){
 }
 
 spawnRateOnesSlider.addEventListener('input',updateSpawnRate)
-spawnRateFractionsSlider.addEventListener('input',updateSpawnRate)
+
 numWorldsSlider.addEventListener('input', updateNumPersistingWorlds)
 document.getElementById("api-post").addEventListener(
     'click',
@@ -116,14 +114,14 @@ function drawMaps(data) {
 function buildInput() {
     let input = {
         "worldName": document.getElementsByClassName('selected-map')[0].id,
-        "minInitGreenlightLen": Number(document.getElementById('minInitGreenlightLen').value),
-        "maxInitGreenlightLen": Number(document.getElementById('maxInitGreenlightLen').value),
+        "minInitGreenlightLen": Number(document.getElementById('greenlightRange').value.split(" - ")[0]),
+        "maxInitGreenlightLen": Number(document.getElementById('greenlightRange').value.split(" - ")[1]),
         "singleLightBias": Number(document.getElementById('singleLightBias').value),
         "allLightsBias": Number(document.getElementById('allLightsBias').value),
         "numWorlds": Number(document.getElementById('numWorlds').value),
         "numPersistingWorlds": Number(document.getElementById('numPersistingWorlds').value),
         "numEpochs": Number(document.getElementById('numEpochs').value),
-        "spawnRate": Number(document.getElementById('spawn-rate-sum').value)
+        "spawnRate": Number(document.getElementById('spawnRate').value)
     }
 
     return input
@@ -151,4 +149,6 @@ function drawSingleMap(map) {
 fetch(apiUrl + "list-worlds")
     .then(response => response.json())
     .then(data => drawMaps(data))
+
+
 
