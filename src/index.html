@@ -4,45 +4,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>INPUT VARIABLES</title>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.0/themes/base/jquery-ui.css">
+
+  <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+  <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
+  <script>
+  $( function() {
+    $( "#slider-range" ).slider({
+      range: true,
+      min: 5,
+      max: 150,
+      values: [ 40, 70 ],
+      slide: function( event, ui ) {
+        $( "#greenlightRange" ).val( "" + ui.values[ 0 ] + " - " + ui.values[ 1 ] );
+      }
+    });
+    $( "#greenlightRange" ).val( $( "#slider-range" ).slider( "values", 0 ) +
+      " - " + $( "#slider-range" ).slider( "values", 1 ) );
+  } );
+  </script>
+    <title>Symulacja Ruchu Drogowego</title>
 </head>
 
 <body>
     <div id="container">
 
         <div class="vars-category">
-            <h1>INPUT VARIABLES</h1>
+            <h1> Wybierz świat i wprowadź zmienne</h1>
         </div>
         
 
         <div id="gallery-container" class="vars-category">
+        </div>
+
+        <div id="spawn-rate" class="vars-category">
+            <label for="spawn-rate">
+                Ilośc pojazdów na sto epok:
+            </label>
+            <div id="ones">
+                <input type="range" min="1" max="20" value="8" step=".2" id="spawnRateOnesSlider">
+                <output id="spawnRate">8</output>
+            </div>
+
 
         </div>
 
-        <div id="lights">
 
             <div id="lights-starting" class="vars-category">
-                <label for="green-lights">Init green light lenght:</label>
-                <div>
-                    min:
-                    <input type="number" name="" id="minInitGreenlightLen" min="0" max="100" value="40">
-                </div>
-                <div>
-                    max:
-                    <input type="number" name="" id="maxInitGreenlightLen" min="0" max="200" value="70">
+                <label for="amber-lights">zmienne związane z czasem zielonego światła:</label>
+                <p>
+                    zakres wartości początkowych:&nbsp;
+                    <output id="greenlightRange">40 - 70</output>
+                  </p>
+                  <div id="slider-container">
+                  <div id="slider-range"></div>
                 </div>
 
-            </div>
-
-            <div id="lights-bias"  class="vars-category">
-                <label for="amber-lights">Init bias:</label>
+                
                 <div>
-                    single light:
-                    <input type="number" name="" id="singleLightBias" min="1" max="20" value="5">
+                    promień mutacji lokalnej: &nbsp;
+                    <input type="range" step="1"  name="" id="singleLightBias" min="1" max="20" value="5"
+                    oninput="this.nextElementSibling.value = this.value">
+                    <output>5</output>
                 </div>
                 <div>
-                    all lights:
-                    <input type="number" name="" id="allLightsBias" min="1" max="20" value="5">
+                    promień mutacji globalnej:
+                    <input type="range" step="1"  name="" id="allLightsBias" min="1" max="10" value="3"
+                    oninput="this.nextElementSibling.value = this.value">
+                    <output>3</output>
                 </div>
 
             </div>
@@ -51,23 +80,23 @@
 
 
         <div id="learning-proportions" class="vars-category">
-            <label for="learning-proportions">learning-proportions</label>
+            <label for="learning-proportions">zmienne dotyczące procesu uczenia:</label>
             <div id="epochs">
-                epochs number:
+                liczba epok:
                 <input type="range" min="3" max="20" value="10" step="1" id="numEpochs"
                     oninput="this.nextElementSibling.value = this.value">
                 <output>10</output>
             </div>
 
             <div id="worlds">
-                worlds number:
+                liczba agentów:
                 <input type="range" min="3" max="20" value="10" step="1" id="numWorlds"
                     oninput="this.nextElementSibling.value = this.value">
                 <output>10</output>
             </div>
 
             <div id="persisting-worlds">
-                persisting worlds number:
+                liczba najlepszych agentów:
                 <input type="range" min="1" max="20" value="4" step="1" id="numPersistingWorlds"
                     oninput="this.nextElementSibling.value = this.value">
                 <output>4</output>
@@ -76,25 +105,10 @@
             
 
         </div>
-        <div id="spawn-rate" class="vars-category">
-            <label for="spawn-rate">
-                spawn-rate:
-                <span id="spawn-rate-sum">0</span>
-            </label>
-            <div id="ones">
-                <input type="range" min="1" max="30" value="4" step=".1" id="spawnRateOnesSlider">
-                <output>4</output>
-            </div>
-            <div id="fractions">
-                <input type="range" min="0" max="1" value="0.25" step="0.05" id="spawnRateFractionsSlider">
-                <output>0.25</output>
-            </div>
 
-
-        </div>
 
         <div id="button">
-            <button id="api-post">Generate simulation</button>
+            <button id="api-post">Rozpocznij Przeszukiwanie</button>
         </div>
         
 

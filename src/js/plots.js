@@ -21,12 +21,12 @@ function plot(plot){
 
         y: plot,
         mode: 'markers',
-        name: "relative cost of epoch",
+        name: "Względny koszt epoki",
     };
     
     var b = {
         y: plot,
-        name: "smoothened learning curve",
+        name: "Wygładzona krzywa uczenia",
         type: "scatter",
         mode: 'lines',
         line:{
@@ -40,7 +40,7 @@ function plot(plot){
         y: [plot.at(0),plot.at(-1)],
         x: [0, plot.length -1],
         mode: 'scatter',
-        name: "overall tendency",
+        name: "Ogólna tendecja",
         }
     
     var plotData = [a,b,c];
@@ -48,7 +48,7 @@ function plot(plot){
     let delta = ((plot.at(0)-plot.at(-1))*100).toFixed(1)
 
     var layout = {
-        title: 'Learning Curve ( ' + delta + "% )",
+        title: 'Krzywa uczenia ( ' + delta + "% spadek kosztu )",
         yaxis: {range: [0, UPPER_PLOT_RANGE]},
         yaxis2: { range: [0, UPPER_PLOT_RANGE]},
         yaxis3: { range: [0, UPPER_PLOT_RANGE]}
@@ -60,16 +60,16 @@ function plot(plot){
 
 function handleStatusUpdate(response) {
     if (response.status == "running") {
-        plotDiv.textContent = 'Running a session...'
+        plotDiv.textContent = 'Sesja w toku...'
         plot(response.plot)
         session(token)
     }
     else if (response.status == "done") {
         plot(response.plot)
-        plotDiv.textContent = 'Session finished'
+        plotDiv.textContent = 'Sesja zakończona'
         document.getElementById('animate').style.display = 'block'
     } else {
-        plotDiv.textContent = 'Waiting for first epoch to finish...'
+        plotDiv.textContent = 'Oczekiwanie na wyniki pierwszej epoki...'
         session(token)
     }
 }
