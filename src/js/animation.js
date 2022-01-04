@@ -66,8 +66,6 @@ function main(map, plot) {
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
     })
 
-
-
     const worldL = new World(scene, map_columns, map_rows, map, plot.before, 0)
     const worldR = new World(scene, map_columns, map_rows, map, plot.after, map_columns + 1)
 
@@ -76,9 +74,9 @@ function main(map, plot) {
 
 
 
-function buildTicks(scene, controls, renderer, camera, plot, worldL, worldR, map_columns, map_rows) {
+function buildTicks(scene, controls, renderer, camera, plot, worldL, worldR) {
 
-    var simElapsedTime = 0
+    let simElapsedTime = 0
     const pointLight = new THREE.DirectionalLight(0xffffff, .8)
     pointLight.position.x = 0
     pointLight.position.y = 0
@@ -125,12 +123,13 @@ function buildTicks(scene, controls, renderer, camera, plot, worldL, worldR, map
         prevElapsedTime = elapsedTime
 
         frame_index = Math.floor(simElapsedTime)
+        const previousStep = frame_index > 0 ? frame_index - 1 : 0
+        const partPercentage = (frame_index / steps_amount * 100).toFixed(1)
 
-        let partPercentage = (frame_index / steps_amount * 100).toFixed(1)
         document.getElementById("part_value").textContent = partPercentage
         document.getElementById("part_change_slider").value = (frame_index / steps_amount * 100).toFixed(1)
 
-        let previousStep = frame_index > 0 ? frame_index - 1 : 0
+    
         if(frame_index<steps_amount){
             worldL.updateWorld(before.steps[previousStep], before.steps[frame_index], before.steps[frame_index + 1], simElapsedTime)
             worldR.updateWorld(after.steps[previousStep], after.steps[frame_index], after.steps[frame_index + 1], simElapsedTime)
@@ -148,8 +147,6 @@ function buildTicks(scene, controls, renderer, camera, plot, worldL, worldR, map
     }
     tick()
 }
-
-
 
 getMapAndPlot()
     .then(([map, plot]) => main(map, plot))
