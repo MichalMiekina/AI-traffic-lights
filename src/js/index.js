@@ -6,12 +6,10 @@ import { buildWorldMesh } from './Terrain'
 const apiUrl = `http://localhost:80/api/`
 
 const spawnRateOnesSlider = document.getElementById('spawnRateOnesSlider')
-const spawnRateFractionsSlider = document.getElementById('spawnRateFractionsSlider')
 const numWorldsSlider = document.getElementById('numWorlds')
 const numPersistingWorldsSlider = document.getElementById('numPersistingWorlds')
 
 const ones = document.getElementById('ones')
-const fractions = document.getElementById('fractions')
 
 var token = ''
 
@@ -47,7 +45,6 @@ const tick = () => {
     renderer.render(scene, camera)
     window.requestAnimationFrame(tick)
 }
-
 
 
 updateSpawnRate()
@@ -98,13 +95,14 @@ function drawMaps(data) {
         document.getElementById('gallery-container').appendChild(img)
     }
     const galleryMaps = document.getElementsByClassName('world-map')
+    galleryMaps[1].classList.add('selected-map')
 
     for (let i = 0; i < galleryMaps.length; i++) {
         galleryMaps[i].addEventListener(
             'click',
             function () {
-                for (let j = 0; j < galleryMaps.length; j++) {
-                    galleryMaps[j].classList.remove('selected-map')
+                for(let j = 0; j < galleryMaps.length;j++){
+                    galleryMaps[j].classList.remove('selected-map')   
                 }
                 galleryMaps[i].classList.add('selected-map')
             }
@@ -133,9 +131,9 @@ function drawSingleMap(map) {
     console.log(map)
     const sideSize = map.nodes.length
     const pointLight = new THREE.DirectionalLight(0xffffff, .9)
-    pointLight.position.x = 2
-    pointLight.position.y = 3
-    pointLight.position.z = 4
+    pointLight.position.x = sideSize/2
+    pointLight.position.y = -1 * sideSize/2 
+    pointLight.position.z = 20
     scene.add(pointLight)
 
     scene.add(buildWorldMesh(map))
@@ -151,6 +149,3 @@ function drawSingleMap(map) {
 fetch(apiUrl + "list-worlds")
     .then(response => response.json())
     .then(data => drawMaps(data))
-
-
-

@@ -13,8 +13,6 @@ const FRAME_COLOR = '#FFF'
 
 const GRASS_COLOR = '#0a0'
 
-
-const streetTexture = createStreet()
 const grassTexture = createGrass()
 
 
@@ -26,13 +24,12 @@ class World {
         this.height = height
         this.cars = []
         this.lights = []
-        for (let i = 0; i < course.steps[0].lights.length; i++) {
-            let id = course.steps[0].lights[i].id
 
-            let light = new Light(id, height, this.shift)
+        course.steps[0].lights.forEach(element => {
+            const light = new Light(element.id, height, this.shift)
             this.lights.push(light)
             this.scene.add(light.mesh)
-        }
+        })
 
         this.map = buildWorldMesh(map)
         this.map.position.x += shift
@@ -41,45 +38,43 @@ class World {
     updateWorld(prevStep, step0, step1, simElapsedTime) {
         this.updateCars(prevStep.cars, step0.cars, step1.cars, simElapsedTime)
         this.updateLights(step0.lights)
-
     }
     updateLights(lights) {
-        for (let i = 0; i < this.lights.length; i++) {
-            this.updateLightColor(lights, this.lights[i])
-        }
+        this.lights.forEach(element => {
+            this.updateLightColor(lights, element)
+        })
     }
     updateLightColor(lights, { id, mesh }) {
-        let { color } = lights.find(obj => obj.id == id)
-        if (color == 'red') {
-            mesh.children[0].material.color = { r: 1, g: 0, b: 0 }
+        const { color } = lights.find(obj => obj.id == id)
+        switch (color) {
+            case 'red':
+                mesh.children[0].material.color = { r: 1, g: 0, b: 0 }
+                break;
+            case 'green':
+                mesh.children[0].material.color = { r: 0, g: 1, b: 0 }
+                break;
+            case 'amber':
+                mesh.children[0].material.color = { r: 1, g: 1, b: 0 }
+                break;
         }
-        else if (color == 'green') {
-            mesh.children[0].material.color = { r: 0, g: 1, b: 0 }
-        }
-        else if (color == 'amber') {
-            mesh.children[0].material.color = { r: 1, g: 1, b: 0 }
-        }
-
     }
     updateCars(prevCars, cars0, cars1, simElapsedTime) {
+        const existingCarsID = cars0.map(a => a.id)
+
         // removing cars that left the world
-        let existingCarsID = cars0.map(a => a.id)
-        for (let i = 0; i < this.cars.length; i++) {
-            if (!existingCarsID.includes(this.cars[i].id)) {
-                this.removeSingleCar(this.cars[i].id)
-            }
-        }
+        this.cars.forEach(element => {
+            !existingCarsID.includes(element.id) && this.removeSingleCar(element.id)
+        })
 
         // creating and moving cars
-        for (let i = 0; i < cars0.length; i++) {
-            this.updateCarPosition(prevCars, cars0, cars1, cars0[i], simElapsedTime)
-        }
+        cars0.forEach(element => {
+            this.updateCarPosition(prevCars, cars0, cars1, element, simElapsedTime)
+        });
 
-        for (let i = 0; i < this.cars.length; i++) {
-            if (cars0.map(a => a.id).includes(this.cars[i].id) && cars1.map(a => a.id).includes(this.cars[i].id)) {
-                this.updateCarRotation(cars0, cars1, this.cars[i].id)
-            }
-        }
+        // updating cars rotation
+        this.cars.forEach(element => {
+            existingCarsID.includes(element.id) && this.updateCarRotation(cars0, element.id)
+        })
     }
 
     updateCarPosition(prevCars, cars0, cars1, { id, x, y }, simElapsedTime) {
@@ -93,47 +88,49 @@ class World {
                 this.scene.add(car.mesh)
             }
             // change car position
-            let car0 = cars0.find(obj => obj.id == id)
-            let car1 = cars1.find(obj => obj.id == id)
+            const car0 = cars0.find(obj => obj.id == id)
+            const car1 = cars1.find(obj => obj.id == id)
 
-            let diff_x = car1.x - car0.x
-            let diff_y = car1.y - car0.y
+            const diff_x = car1.x - car0.x
+            const diff_y = car1.y - car0.y
 
             car.mesh.position.x = x + this.shift + diff_x * frameIndexRest
             car.mesh.position.y = this.height - y - diff_y * frameIndexRest
         }
         else {
-            let prevCar = prevCars.find(obj => obj.id == id)
-            let car0 = cars0.find(obj => obj.id == id)
+            const prevCar = prevCars.find(obj => obj.id == id)
+            const car0 = cars0.find(obj => obj.id == id)
 
-            let diff_x = car0.x - prevCar.x
-            let diff_y = car0.y - prevCar.y
+            const diff_x = car0.x - prevCar.x
+            const diff_y = car0.y - prevCar.y
 
-            car.mesh.position.x = x + this.shift + diff_x * frameIndexRest
-            car.mesh.position.y = this.height - y - diff_y * frameIndexRest
+            if (car) {
+                car.mesh.position.x = x + this.shift + diff_x * frameIndexRest
+                car.mesh.position.y = this.height - y - diff_y * frameIndexRest
+            }
         }
 
 
     }
 
-    updateCarRotation(cars0, cars1, id) {
-        let step0 = cars0.find(obj => obj.id == id)
-        let step1 = cars1.find(obj => obj.id == id)
+    updateCarRotation(cars0, id) {
 
-        let diff_x = step1.x - step0.x
-        let diff_y = step1.y - step0.y
-
-        if (diff_x < 0 && diff_y == 0) {
-            this.findCar(id).mesh.rotation.y = Math.PI * (3 / 2)
-        }
-        else if (diff_x > 0 && diff_y == 0) {
-            this.findCar(id).mesh.rotation.y = Math.PI * (1 / 2)
-        }
-        else if (diff_x == 0 && diff_y < 0) {
-            this.findCar(id).mesh.rotation.y = Math.PI * 0
-        }
-        else if (diff_x == 0 && diff_y > 0) {
-            this.findCar(id).mesh.rotation.y = Math.PI * 1
+        const d = cars0.find(obj => obj.id == id).d
+        const mesh = this.findCar(id).mesh
+        
+        switch (d) {
+            case 'l':
+                mesh.rotation.y = Math.PI * (3 / 2)
+                break;
+            case 'r':
+                mesh.rotation.y = Math.PI * (1 / 2)
+                break;
+            case 't':
+                mesh.rotation.y = Math.PI * 0
+                break;
+            case 'b':
+                mesh.rotation.y = Math.PI * 1
+                break;
         }
     }
 
@@ -165,12 +162,12 @@ function createStreet(weight, type) {
 
     context.fillStyle = FRAME_COLOR
     context.fillRect(RECT_START, RECT_START, RECT_SIZE, RECT_SIZE)
-    
-    if(['exit','entry'].includes(type)){
+
+    if (['exit', 'entry'].includes(type)) {
         context.fillStyle = type == 'exit' ? '#990000' : '#000099'
         context.fillRect(INNER_RECT_START, INNER_RECT_START, INNER_RECT_SIZE, INNER_RECT_SIZE)
     }
-    else{
+    else {
         context.fillStyle = STREET_COLOR
         context.fillRect(INNER_RECT_START, INNER_RECT_START, INNER_RECT_SIZE, INNER_RECT_SIZE)
     }
@@ -182,9 +179,6 @@ function createStreet(weight, type) {
         context.textBaseline = 'middle';
         context.fillText(weight, RECT_SIZE / 2, RECT_SIZE / 2);
     }
-
-    
-
     return new THREE.CanvasTexture(canvas)
 }
 
