@@ -6,7 +6,7 @@ Run this followed commands:
 # Install dependencies (only the first time)
 npm install
 
-# Run the local server at localhost:8080
+# Run the local server at localhost:80
 npm run dev
 
 # node 17.0v likes to error during launching, this config set fixes that

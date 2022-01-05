@@ -14,7 +14,7 @@ module.exports = merge(
         devServer:
         {
             host: '0.0.0.0',
-            port: portFinderSync.getPort(8080),
+            port: portFinderSync.getPort(80),
             contentBase: './dist',
             watchContentBase: true,
             open: true,
@@ -22,7 +22,7 @@ module.exports = merge(
             hot: true,
             proxy: {
                 '/api': {
-                    target: 'http://127.0.0.1:5000',
+                    target: `http://${process.env.API_HOST ?? "127.0.0.1"}:5000`,
                     secure: false
                 }
             },
