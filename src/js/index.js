@@ -76,7 +76,7 @@ document.getElementById("api-post").addEventListener(
         })
             .then(response => response.json())
             .then(data => token = data.token)
-            .then(token => window.location.href = 'http://localhost:80/plots?token=' + token + '&world=' + input.worldName)
+            .then(token => window.location.href = `http://localhost:80/plots?token=${token}&world=${input.worldName}`)
     }
 )
 

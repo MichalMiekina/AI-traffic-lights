@@ -79,6 +79,6 @@ session(token)
 document.getElementById("animate").addEventListener(
     'click',
     function () {
-        window.location.href = 'http://localhost:80/three?token=' + token+'&world='+params.get('world')
+        window.location.href = `http://localhost:80/three?token=${token}&world=${params.get('world')}`
     }
 )
