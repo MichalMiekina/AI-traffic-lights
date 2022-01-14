@@ -6,23 +6,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.13.0/themes/base/jquery-ui.css">
 
-  <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
-  <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
-  <script>
-  $( function() {
-    $( "#slider-range" ).slider({
-      range: true,
-      min: 5,
-      max: 150,
-      values: [ 40, 70 ],
-      slide: function( event, ui ) {
-        $( "#greenlightRange" ).val( "" + ui.values[ 0 ] + " - " + ui.values[ 1 ] );
-      }
-    });
-    $( "#greenlightRange" ).val( $( "#slider-range" ).slider( "values", 0 ) +
-      " - " + $( "#slider-range" ).slider( "values", 1 ) );
-  } );
-  </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
+    <script>
+        $(function () {
+            $("#slider-range").slider({
+                range: true,
+                min: 5,
+                max: 150,
+                values: [40, 70],
+                slide: function (event, ui) {
+                    $("#greenlightRange").val("" + ui.values[0] + " - " + ui.values[1]);
+                }
+            });
+            $("#greenlightRange").val($("#slider-range").slider("values", 0) +
+                " - " + $("#slider-range").slider("values", 1));
+        });
+    </script>
     <title>Symulacja Ruchu Drogowego</title>
 </head>
 
@@ -32,7 +32,6 @@
         <div class="vars-category">
             <h1> Wybierz świat i wprowadź zmienne</h1>
         </div>
-        
 
         <div id="gallery-container" class="vars-category">
         </div>
@@ -45,77 +44,68 @@
                 <input type="range" min="1" max="20" value="8" step=".2" id="spawnRateOnesSlider">
                 <output id="spawnRate">8</output>
             </div>
-
-
         </div>
 
+        <div id="lights-starting" class="vars-category">
 
-            <div id="lights-starting" class="vars-category">
-                <label for="amber-lights">zmienne związane z czasem zielonego światła:</label>
-                <p>
-                    zakres wartości początkowych:&nbsp;
-                    <output id="greenlightRange">40 - 70</output>
-                  </p>
-                  <div id="slider-container">
-                  <div id="slider-range"></div>
-                </div>
-
-                
-                <div>
-                    promień mutacji lokalnej: &nbsp;
-                    <input type="range" step="1"  name="" id="singleLightBias" min="1" max="20" value="5"
-                    oninput="this.nextElementSibling.value = this.value">
-                    <output>5</output>
-                </div>
-                <div>
-                    promień mutacji globalnej:
-                    <input type="range" step="1"  name="" id="allLightsBias" min="1" max="10" value="3"
-                    oninput="this.nextElementSibling.value = this.value">
-                    <output>3</output>
-                </div>
-
-            </div>
-        </div>
-
-
-
-        <div id="learning-proportions" class="vars-category">
-            <label for="learning-proportions">zmienne dotyczące procesu uczenia:</label>
-            <div id="epochs">
-                liczba epok:
-                <input type="range" min="3" max="20" value="10" step="1" id="numEpochs"
-                    oninput="this.nextElementSibling.value = this.value">
-                <output>10</output>
+            <label for="amber-lights">Zmienne związane z czasem zielonego światła:</label>
+            <p>
+                zakres wartości początkowych:&nbsp;
+                <output id="greenlightRange">40 - 70</output>
+            </p>
+            <div id="slider-container">
+                <div id="slider-range"></div>
             </div>
 
-            <div id="worlds">
-                liczba agentów:
-                <input type="range" min="3" max="20" value="10" step="1" id="numWorlds"
+            <div>
+                promień mutacji lokalnej: &nbsp;
+                <input type="range" step="1" name="" id="singleLightBias" min="1" max="20" value="5"
                     oninput="this.nextElementSibling.value = this.value">
-                <output>10</output>
+                <output>5</output>
             </div>
-
-            <div id="persisting-worlds">
-                liczba najlepszych agentów:
-                <input type="range" min="1" max="20" value="4" step="1" id="numPersistingWorlds"
+            <div>
+                promień mutacji globalnej:
+                <input type="range" step="1" name="" id="allLightsBias" min="1" max="10" value="3"
                     oninput="this.nextElementSibling.value = this.value">
-                <output>4</output>
+                <output>3</output>
             </div>
-
-            
 
         </div>
+    </div>
 
 
-        <div id="button">
-            <button id="api-post">Rozpocznij Przeszukiwanie</button>
+    <div id="learning-proportions" class="vars-category">
+
+        <label for="learning-proportions">Zmienne dotyczące procesu uczenia:</label>
+        <div id="epochs">
+            liczba epok:
+            <input type="range" min="3" max="20" value="10" step="1" id="numEpochs"
+                oninput="this.nextElementSibling.value = this.value">
+            <output>10</output>
         </div>
-        
 
+        <div id="worlds">
+            liczba agentów:
+            <input type="range" min="3" max="20" value="10" step="1" id="numWorlds"
+                oninput="this.nextElementSibling.value = this.value">
+            <output>10</output>
+        </div>
 
+        <div id="persisting-worlds">
+            liczba najlepszych agentów:
+            <input type="range" min="1" max="20" value="4" step="1" id="numPersistingWorlds"
+                oninput="this.nextElementSibling.value = this.value">
+            <output>4</output>
+        </div>
 
     </div>
 
+
+    <div id="button">
+        <button id="api-post">Rozpocznij przeszukiwanie</button>
+    </div>
+
+    </div>
     <canvas class="gallery" id="c"></canvas>
 
 </body>

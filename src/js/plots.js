@@ -13,47 +13,37 @@ const plotDiv = document.getElementById("header")
 
 
 
-function plot(plot){
-
-
-
-    var a = {
-
+function plot(plot) {
+    const a = {
         y: plot,
         mode: 'markers',
         name: "Względny koszt epoki",
     };
-    
-    var b = {
+    const b = {
         y: plot,
         name: "Wygładzona krzywa uczenia",
         type: "scatter",
         mode: 'lines',
-        line:{
-        shape: "spline",
-        smoothing: "1.3"
+        line: {
+            shape: "spline",
+            smoothing: "1.3"
         }
     };
-
-
-    var c = {
-        y: [plot.at(0),plot.at(-1)],
-        x: [0, plot.length -1],
+    const c = {
+        y: [plot.at(0), plot.at(-1)],
+        x: [0, plot.length - 1],
         mode: 'scatter',
         name: "Ogólna tendecja",
-        }
-    
-    var plotData = [a,b,c];
-    
-    let delta = ((plot.at(0)-plot.at(-1))*100).toFixed(1)
+    }
+    const plotData = [a, b, c];
+    const delta = ((plot.at(0) - plot.at(-1)) * 100).toFixed(1)
 
-    var layout = {
+    const layout = {
         title: 'Krzywa uczenia ( ' + delta + "% spadek kosztu )",
-        yaxis: {range: [0, UPPER_PLOT_RANGE]},
-        yaxis2: { range: [0, UPPER_PLOT_RANGE]},
-        yaxis3: { range: [0, UPPER_PLOT_RANGE]}
+        yaxis: { range: [0, UPPER_PLOT_RANGE] },
+        yaxis2: { range: [0, UPPER_PLOT_RANGE] },
+        yaxis3: { range: [0, UPPER_PLOT_RANGE] }
     };
-
     Plotly.newPlot('plot', plotData, layout);
 }
 
@@ -89,6 +79,6 @@ session(token)
 document.getElementById("animate").addEventListener(
     'click',
     function () {
-        window.location.href = 'http://localhost:8080/three?token=' + token+'&world='+params.get('world')
+        window.location.href = 'http://localhost:8080/three?token=' + token + '&world=' + params.get('world')
     }
 )

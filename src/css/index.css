@@ -37,7 +37,7 @@ h1{
 
 
 #slider-range {
-    height: 12px;
+    height: .4em;
     width: 300px !important;
     border-width: 3px;
     margin-top: 5px;
@@ -104,9 +104,13 @@ color: black;
 .ui-widget-content {
     border-radius: 10px;
 	border: 1px solid red;
-	background: #EFEFEF;
+	background: #f0ecec;
 	color: red;
     height: 5px;
     padding-top: px;
 }
 
+.ui-slider-handle{
+    width: .75em !important;
+    height: .75em !important;
+}

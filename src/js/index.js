@@ -66,7 +66,7 @@ numWorldsSlider.addEventListener('input', updateNumPersistingWorlds)
 document.getElementById("api-post").addEventListener(
     'click',
     function () {
-        let input = buildInput()
+        const input = buildInput()
         fetch(apiUrl + "learn", {
             method: 'POST',
             body: JSON.stringify(input),
@@ -76,7 +76,7 @@ document.getElementById("api-post").addEventListener(
         })
             .then(response => response.json())
             .then(data => token = data.token)
-            .then(token => window.location.href = 'http://localhost:8080/plots?token=' + token + '&world=' + input.worldName)
+            .then(token => window.location.href = `http://localhost:8080/plots?token=${token}&world=${input.worldName}`)
     }
 )
 
@@ -88,7 +88,7 @@ function drawMaps(data) {
         }
         drawSingleMap(data.worlds[i], i)
 
-        var img = document.createElement('img')
+        const img = document.createElement('img')
         img.src = renderer.domElement.toDataURL("image/png");
         img.id = data.worlds[i].name
         img.className = 'world-map'
@@ -128,7 +128,7 @@ function buildInput() {
 
 
 function drawSingleMap(map) {
-    console.log(map)
+    console.log(map.name)
     const sideSize = map.nodes.length
     const pointLight = new THREE.DirectionalLight(0xffffff, .9)
     pointLight.position.x = sideSize/2
