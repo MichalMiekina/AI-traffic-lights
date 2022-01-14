@@ -8,7 +8,7 @@ const params = new URLSearchParams(document.location.search);
 const token = params.get("token");
 const worldName = params.get("world")
 
-const apiUrl = 'http://localhost:8080/api/'
+const apiUrl = `http://localhost:80/api/`
 function getMap() {
     return fetch(`${apiUrl}world/${worldName}`)
         .then(response => response.json())

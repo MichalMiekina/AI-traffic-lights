@@ -3,7 +3,7 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { buildWorldMesh } from './Terrain'
 
-const apiUrl = 'http://localhost:8080/api/'
+const apiUrl = `http://localhost:80/api/`
 
 const spawnRateOnesSlider = document.getElementById('spawnRateOnesSlider')
 const numWorldsSlider = document.getElementById('numWorlds')
@@ -76,7 +76,7 @@ document.getElementById("api-post").addEventListener(
         })
             .then(response => response.json())
             .then(data => token = data.token)
-            .then(token => window.location.href = `http://localhost:8080/plots?token=${token}&world=${input.worldName}`)
+            .then(token => window.location.href = 'http://localhost:80/plots?token=' + token + '&world=' + input.worldName)
     }
 )
 

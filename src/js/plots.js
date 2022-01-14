@@ -7,7 +7,7 @@ const UPPER_PLOT_RANGE = 1.5
 
 const params = new URLSearchParams(document.location.search);
 const token = params.get("token");
-const statusUrl = 'http://localhost:8080/api/status/'
+const statusUrl = `http://localhost:80/api/status/`
 document.getElementById('animate').style.display = 'none'
 const plotDiv = document.getElementById("header")
 
@@ -79,6 +79,6 @@ session(token)
 document.getElementById("animate").addEventListener(
     'click',
     function () {
-        window.location.href = 'http://localhost:8080/three?token=' + token + '&world=' + params.get('world')
+        window.location.href = 'http://localhost:80/three?token=' + token+'&world='+params.get('world')
     }
 )

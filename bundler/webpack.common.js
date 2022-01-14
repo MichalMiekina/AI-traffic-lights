@@ -1,5 +1,6 @@
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const webpack = require('webpack')
 const MiniCSSExtractPlugin = require('mini-css-extract-plugin')
 const path = require('path')
 
@@ -24,6 +25,9 @@ module.exports = {
     devtool: 'source-map',
     plugins:
         [
+            new webpack.DefinePlugin({
+                'API_HOST': JSON.stringify(process.env.API_HOST),
+            }),
             new CopyWebpackPlugin({
                 patterns: [
                     { from: path.resolve(__dirname, '../static') }
