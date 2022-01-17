@@ -156,7 +156,7 @@ function createContext() {
     return { canvas: canvas, context: canvas.getContext('2d') }
 }
 
-function createStreet(weight, type) {
+function createStreet(weight, type, directions) {
 
     const { canvas, context } = createContext()
 
@@ -179,6 +179,7 @@ function createStreet(weight, type) {
         context.textBaseline = 'middle';
         context.fillText(weight, RECT_SIZE / 2, RECT_SIZE / 2);
     }
+
     return new THREE.CanvasTexture(canvas)
 }
 
@@ -200,7 +201,7 @@ function buildWorldMesh(map) {
     const nodesMeshesList = []
     for (let i = 0; i < map.nodes.length; i++) {
         for (let j = 0; j < map.nodes[i].length; j++) {
-            let texture = map.nodes[i][j].type == 'grass' ? grassTexture : createStreet(map.nodes[i][j].weight, map.nodes[i][j].type)
+            let texture = map.nodes[i][j].type == 'grass' ? grassTexture : createStreet(map.nodes[i][j].weight, map.nodes[i][j].type, map.nodes[i][j].directions)
 
             let material = new THREE.MeshLambertMaterial({ map: texture })
 

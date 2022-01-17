@@ -128,7 +128,6 @@ function buildInput() {
 
 
 function drawSingleMap(map) {
-    console.log(map.name)
     const sideSize = map.nodes.length
     const pointLight = new THREE.DirectionalLight(0xffffff, .9)
     pointLight.position.x = sideSize/2
